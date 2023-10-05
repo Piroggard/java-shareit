@@ -38,6 +38,8 @@ public class UserController {
         userService.removeUser(id);
     }
 
+
+    
     @GetMapping()
     public List<User> getUsers(){
         return userService.getUsers();
