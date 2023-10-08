@@ -26,7 +26,7 @@ public class ItemServiceImpl implements ItemService {
         itemValidation.checkUserId(id);
         log.info("id {} , itemDto {}", id, itemDto);
         Item item = Item.builder().id(idItem++).name(itemDto.getName()).description(itemDto.getDescription()).
-        owner(id).available(itemDto.getAvailable()).build();
+                owner(id).available(itemDto.getAvailable()).build();
         return itemStorage.addItem(item);
     }
 
