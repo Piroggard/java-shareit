@@ -14,27 +14,28 @@ import ru.practicum.shareit.user.storage.UserStorage;
 @Component
 public class UserValidation {
     UserStorage userStorage;
-    public void validationUser (UserDto user) throws ValidationException {
+
+    public void validationUser(UserDto user) throws ValidationException {
         log.info("user {}", user);
         validationUserData(user);
         validationEmail(user);
         validationEmailToList(user);
     }
 
-    public void validationEmailToList(UserDto user){
+    public void validationEmailToList(UserDto user) {
         for (User user1 : userStorage.getUser()) {
             log.info("userStorage {}", userStorage.getUser());
-            if (user1.getEmail().equals(user.getEmail())){
+            if (user1.getEmail().equals(user.getEmail())) {
                 throw new ValidationException("Такая почта уже существует");
             }
         }
     }
 
-    public void validationUpdateEmailToList(String mail, Integer id){
+    public void validationUpdateEmailToList(String mail, Integer id) {
         for (User user1 : userStorage.getUser()) {
             log.info("userStorage {}", userStorage.getUser());
-            if (user1.getEmail().equals(mail)){
-                if (id != user1.getId()){
+            if (user1.getEmail().equals(mail)) {
+                if (id != user1.getId()) {
                     throw new ValidationException("Такая почта уже существует");
                 }
 
@@ -42,21 +43,21 @@ public class UserValidation {
         }
     }
 
-    public void validationUserData (UserDto user){
-        if(user.getEmail() == null || user.getName() == null){
+    public void validationUserData(UserDto user) {
+        if (user.getEmail() == null || user.getName() == null) {
             throw new ValidationData("Получены не все данные ");
         }
     }
 
-    public void validationEmail (UserDto user) {
+    public void validationEmail(UserDto user) {
         char[] mail = user.getEmail().toCharArray();
         boolean validMail = false;
         for (char c : mail) {
-            if (c == '@'){
+            if (c == '@') {
                 validMail = true;
             }
         }
-        if (!validMail){
+        if (!validMail) {
             throw new ValidationData("Неправильно указанна почта");
         }
     }

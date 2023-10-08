@@ -17,19 +17,20 @@ import java.util.List;
 @RequestMapping(path = "/users")
 public class UserController {
     UserService userService;
+
     @PostMapping
-    public User addUser (@RequestBody UserDto userDto) throws ValidationException {
+    public User addUser(@RequestBody UserDto userDto) throws ValidationException {
         return userService.addUser(userDto);
     }
 
     @PatchMapping("{id}")
-    public User updateUser(@PathVariable Integer id, @RequestBody UserDto userDto){
+    public User updateUser(@PathVariable Integer id, @RequestBody UserDto userDto) {
         return userService.updateUser(id, userDto);
 
     }
 
     @GetMapping("{id}")
-    public User getUser(@PathVariable Integer id){
+    public User getUser(@PathVariable Integer id) {
         return userService.getUser(id);
     }
 
@@ -39,11 +40,8 @@ public class UserController {
     }
 
 
-    
     @GetMapping()
-    public List<User> getUsers(){
+    public List<User> getUsers() {
         return userService.getUsers();
     }
-
-
 }
