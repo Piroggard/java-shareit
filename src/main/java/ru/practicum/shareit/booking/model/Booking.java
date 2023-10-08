@@ -6,7 +6,6 @@ import java.time.LocalDate;
 
 /**
  * TODO Sprint add-bookings.
-
  */
 @Data
 public class Booking {
@@ -15,6 +14,6 @@ public class Booking {
     LocalDate end;
     LocalDate item;
     int booker;
-    Status status ;
+    Status status;
 
 }

@@ -24,19 +24,16 @@ public class ItemServiceImpl implements ItemService {
     public Item addItem(Integer id, ItemDto itemDto) {
         itemValidation.checkItem(itemDto);
         itemValidation.checkUserId(id);
-
         log.info("id {} , itemDto {}", id, itemDto);
         Item item = Item.builder().id(idItem++).name(itemDto.getName()).description(itemDto.getDescription()).
-                owner(id).available(itemDto.getAvailable()).build();
+        owner(id).available(itemDto.getAvailable()).build();
         return itemStorage.addItem(item);
     }
 
     @Override
     public Item updateItem(Integer idUser, Integer itemId, ItemDto itemDto) {
         itemValidation.checkItemUpdate(idUser, itemId);
-        //itemValidation.checkUserId(id);
         Item item = itemStorage.getItem(itemId);
-
 
         if (itemDto.getName() != null) {
             item.setName(itemDto.getName());
