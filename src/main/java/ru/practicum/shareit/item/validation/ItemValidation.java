@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import ru.practicum.shareit.exception.ValidationData;
-import ru.practicum.shareit.exception.ValidationId;
+import ru.practicum.shareit.exception.ValidationIdException;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.storage.ItemStorage;
 import ru.practicum.shareit.user.model.User;
@@ -27,7 +27,7 @@ public class ItemValidation {
         }
 
         if (!checkUser) {
-            throw new ValidationId("Пользыватель с id = " + id + " не найден");
+            throw new ValidationIdException("Пользыватель с id = " + id + " не найден");
         }
     }
 
@@ -48,7 +48,7 @@ public class ItemValidation {
     public void checkItemUpdate(Integer idUser, Integer idItem) {
 
         if (itemStorage.getItem(idItem).getOwner() != idUser) {
-            throw new ValidationId("Невозможно обновитть данные");
+            throw new ValidationIdException("Невозможно обновитть данные");
         }
     }
 

@@ -1,13 +1,15 @@
 package ru.practicum.shareit.item.dto;
 
-import lombok.Builder;
-import lombok.Data;
+import lombok.*;
 
 /**
  * TODO Sprint add-controllers.
  */
 
-@Data
+@Setter
+@Getter
+@AllArgsConstructor
+@EqualsAndHashCode
 @Builder(toBuilder = true)
 public class ItemDto {
 

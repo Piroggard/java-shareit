@@ -7,6 +7,7 @@ import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.service.UserService;
 
+import javax.validation.Valid;
 import java.util.List;
 
 /**
@@ -19,12 +20,12 @@ public class UserController {
     UserService userService;
 
     @PostMapping
-    public User addUser(@RequestBody UserDto userDto) throws ValidationException {
+    public User addUser(@RequestBody @Valid UserDto userDto) throws ValidationException {
         return userService.addUser(userDto);
     }
 
     @PatchMapping("{id}")
-    public User updateUser(@PathVariable Integer id, @RequestBody UserDto userDto) {
+    public User updateUser(@PathVariable @Valid Integer id, @RequestBody UserDto userDto) {
         return userService.updateUser(id, userDto);
 
     }

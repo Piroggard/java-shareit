@@ -1,16 +1,19 @@
 package ru.practicum.shareit.user.model;
 
-import lombok.Builder;
-import lombok.Data;
+import lombok.*;
+
 
 
 /**
  * TODO Sprint add-controllers.
  */
-@Data
+@Setter
+@Getter
+@AllArgsConstructor
+@EqualsAndHashCode
 @Builder(toBuilder = true)
 public class User {
-    int id;
-    String name;
-    String email;
+    private int id;
+    private String name;
+    private String email;
 }

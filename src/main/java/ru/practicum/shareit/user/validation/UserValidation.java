@@ -18,7 +18,6 @@ public class UserValidation {
     public void validationUser(UserDto user) throws ValidationException {
         log.info("user {}", user);
         validationUserData(user);
-        validationEmail(user);
         validationEmailToList(user);
     }
 
@@ -46,19 +45,6 @@ public class UserValidation {
     public void validationUserData(UserDto user) {
         if (user.getEmail() == null || user.getName() == null) {
             throw new ValidationData("Получены не все данные ");
-        }
-    }
-
-    public void validationEmail(UserDto user) {
-        char[] mail = user.getEmail().toCharArray();
-        boolean validMail = false;
-        for (char c : mail) {
-            if (c == '@') {
-                validMail = true;
-            }
-        }
-        if (!validMail) {
-            throw new ValidationData("Неправильно указанна почта");
         }
     }
 
