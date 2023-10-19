@@ -42,4 +42,6 @@ public class ValidationExceptionsHandler {
     public Map<String, String> dataNotFound(final MethodArgumentNotValidException e) {
         return Map.of("Error", "Неправильно указанна почта");
     }
+
+
 }

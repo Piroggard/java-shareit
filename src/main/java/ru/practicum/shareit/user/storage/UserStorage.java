@@ -1,35 +1,46 @@
 package ru.practicum.shareit.user.storage;
 
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 import ru.practicum.shareit.user.model.User;
 
 import java.util.*;
 
 @Component
-
 public class UserStorage {
-    private Map<Integer, User> saveUser = new HashMap<>();
+    JpaUserRepository jpaUserRepository;
+    public UserStorage(JpaUserRepository jpaUserRepository) {
+        this.jpaUserRepository = jpaUserRepository;
+    }
+
+
 
     public User addUser(User user) {
-        saveUser.put(user.getId(), user);
-        return saveUser.get(user.getId());
+        jpaUserRepository.save(user);
+        int primaryKey = user.getId();
+        return jpaUserRepository.getReferenceById(primaryKey);
     }
+    public User getUser(Integer id) {
 
+
+        return jpaUserRepository.findUserById(id);
+    }
 
     public List<User> getUser() {
-        List<User> userList = new ArrayList<>();
-        Collection<User> users = saveUser.values();
-        for (User user : users) {
-            userList.add(user);
-        }
-        return userList;
-    }
-
-    public User getUser(Integer i) {
-        return saveUser.get(i);
+        return jpaUserRepository.findAll();
     }
 
     public void removeUser(Integer id) {
-        saveUser.remove(id);
+        jpaUserRepository.deleteById(id);
     }
+
+    public User updateUser (User user ){
+        jpaUserRepository.save(user);
+        return getUser(user.getId());
+    }
+
+    public User checkEmail (String email){
+        return jpaUserRepository.findUserByEmail(email);
+    }
+
 }

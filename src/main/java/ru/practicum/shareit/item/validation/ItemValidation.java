@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component;
 import ru.practicum.shareit.exception.ValidationData;
 import ru.practicum.shareit.exception.ValidationIdException;
 import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.storage.ItemStorage;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.storage.UserStorage;
@@ -17,17 +18,21 @@ public class ItemValidation {
     UserStorage userStorage;
     ItemStorage itemStorage;
 
-    public void checkUserId(int id) {
+   public void checkUserId(int id) {
         boolean checkUser = false;
-        for (User user : userStorage.getUser()) {
-            if (user.getId() == id) {
-                checkUser = true;
-                break;
-            }
-        }
 
+            if (userStorage.getUser(id) != null) {
+                checkUser = true;
+
+            }
         if (!checkUser) {
             throw new ValidationIdException("Пользыватель с id = " + id + " не найден");
+        }
+    }
+
+    public void checkingDataNull (Item item){
+        if (item == null){
+            throw new ValidationIdException("Вещь не найдена ");
         }
     }
 

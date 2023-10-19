@@ -16,19 +16,23 @@ import java.util.List;
 public class UserServiceImpl implements UserService {
     private final UserStorage userStorage;
     private final UserValidation userValidation;
-    int id = 1;
+
 
     @Override
     public User addUser(UserDto userDto) {
-        userValidation.validationUser(userDto);
-        User user = User.builder().id(id++).name(userDto.getName()).email(userDto.getEmail()).build();
-
+        userValidation.validationUser(userDto , userDto.getId());
+        User user = User.builder().name(userDto.getName()).email(userDto.getEmail()).build();
+        log.info("Входный данне DTO {}", user);
         return userStorage.addUser(user);
     }
 
     @Override
     public User updateUser(Integer id, UserDto userDto) {
-        userValidation.validationUpdateEmailToList(userDto.getEmail(), id);
+
+        userValidation.validationEmailUpdate(userDto , id);
+        //userValidation.validationEmailToList(userDto , id);
+        //userValidation.validationUpdateEmailToList(userDto.getEmail(), id);
+        if (userDto.getEmail() == null)
         log.info("input Data {}", userDto);
         User userUpdate = userStorage.getUser(id);
         if (userDto.getName() != null) {
@@ -38,18 +42,23 @@ public class UserServiceImpl implements UserService {
             userUpdate.setEmail(userDto.getEmail());
         }
         log.info("updateUser {} ", userUpdate);
+        //User user = User.builder().id(id).name(userDto.getName()).email(userDto.getEmail()).build();
 
-        return userStorage.addUser(userUpdate);
+        return userStorage.updateUser(userUpdate);
+
     }
 
     @Override
     public User getUser(Integer id) {
-        return userStorage.getUser(id);
+        User user = userStorage.getUser(id);
+        userValidation.checkingDataNull(user);
+        return user;
     }
 
     @Override
     public List<User> getUsers() {
         return userStorage.getUser();
+
     }
 
     @Override

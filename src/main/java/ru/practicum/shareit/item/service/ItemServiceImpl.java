@@ -1,5 +1,6 @@
 package ru.practicum.shareit.item.service;
 
+import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -12,20 +13,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
-@RequiredArgsConstructor
+@AllArgsConstructor
 @Service
+
 public class ItemServiceImpl implements ItemService {
     private final ItemStorage itemStorage;
     private final ItemValidation itemValidation;
 
-    int idItem = 1;
+
 
     @Override
     public Item addItem(Integer id, ItemDto itemDto) {
         itemValidation.checkItem(itemDto);
         itemValidation.checkUserId(id);
         log.info("id {} , itemDto {}", id, itemDto);
-        Item item = Item.builder().id(idItem++).name(itemDto.getName()).description(itemDto.getDescription())
+        Item item = Item.builder().name(itemDto.getName()).description(itemDto.getDescription())
                 .owner(id).available(itemDto.getAvailable()).build();
         return itemStorage.addItem(item);
     }
@@ -51,7 +53,9 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public Item getItem(Integer itemId) {
-        return itemStorage.getItem(itemId);
+        Item item = itemStorage.getItem(itemId);
+        itemValidation.checkingDataNull(item);
+        return item;
     }
 
     @Override

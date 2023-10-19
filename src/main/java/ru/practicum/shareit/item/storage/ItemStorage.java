@@ -7,28 +7,23 @@ import java.util.*;
 
 @Component
 public class ItemStorage {
-    private Map<Integer, Item> saveItem = new HashMap<>();
+    JpaItemRepository jpaItemRepository;
+
+    public ItemStorage(JpaItemRepository jpaItemRepository) {
+        this.jpaItemRepository = jpaItemRepository;
+    }
 
     public Item addItem(Item item) {
-        saveItem.put(item.getId(), item);
-        return saveItem.get(item.getId());
+
+        return jpaItemRepository.save(item);
     }
 
     public List<Item> getItems() {
-        List<Item> itemList = new ArrayList<>();
-        Collection<Item> items = saveItem.values();
-        for (Item item : items) {
-            itemList.add(item);
-        }
-        return itemList;
+
+        return jpaItemRepository.findAll();
     }
 
     public Item getItem(Integer id) {
-        for (Item item : getItems()) {
-            if (item.getId().equals(id)) {
-                return item;
-            }
-        }
-        return null;
+        return jpaItemRepository.findItemById(id);
     }
 }
