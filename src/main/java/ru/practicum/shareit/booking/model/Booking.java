@@ -8,6 +8,7 @@ import ru.practicum.shareit.item.model.Item;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 /**
  * TODO Sprint add-bookings.
@@ -23,13 +24,13 @@ public class Booking {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     @Column(name = "start_of_booking")
-    private LocalDate start;
+    private LocalDateTime start;
     @Column(name = "end_of_booking")
-    private LocalDate end;
+    private LocalDateTime end;
     @Column(name = "item_id")
     private Integer itemId;
     @Column(name = "booker_id")
-    private int booker;
+    private Integer booker;
     @Column(name = "status")
     private Status status;
 

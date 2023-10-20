@@ -21,5 +21,5 @@ CREATE TABLE IF NOT EXISTS booking (
     booker_id INT,
     status VARCHAR(255),
     CONSTRAINT booking_fr_inems FOREIGN KEY (item_id) REFERENCES inems(id),
-    CONSTRAINT booking_fr_user FOREIGN KEY (booker_id) REFERENCES users(id),
+    CONSTRAINT booking_fr_user FOREIGN KEY (booker_id) REFERENCES users(id)
 );
