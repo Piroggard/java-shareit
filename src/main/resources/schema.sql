@@ -12,3 +12,14 @@ CREATE TABLE IF NOT EXISTS inems (
     owner INT,
     request VARCHAR(255)
 );
+
+CREATE TABLE IF NOT EXISTS booking (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    start_of_booking TIMESTAMP,
+    end_of_booking TIMESTAMP,
+    item_id INT,
+    booker_id INT,
+    status VARCHAR(255),
+    CONSTRAINT booking_fr_inems FOREIGN KEY (item_id) REFERENCES inems(id),
+    CONSTRAINT booking_fr_user FOREIGN KEY (booker_id) REFERENCES users(id),
+);

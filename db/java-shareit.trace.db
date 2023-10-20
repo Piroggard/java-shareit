@@ -1,0 +1,4 @@
+2023-10-20 13:24:02 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Синтаксическая ошибка в выражении SQL "CREATE TABLE IF NOT EXISTS booking ( id INT AUTO_INCREMENT PRIMARY KEY, start TIMESTAMP, [*]end TIMESTAMP, item_id INT, booker INT, status VARCHAR(255), CONSTRAINT booking_fr_inems FOREIGN KEY (item_id) REFERENCES inems(id) )"; ожидалось "identifier"
+Syntax error in SQL statement "CREATE TABLE IF NOT EXISTS booking ( id INT AUTO_INCREMENT PRIMARY KEY, start TIMESTAMP, [*]end TIMESTAMP, item_id INT, booker INT, status VARCHAR(255), CONSTRAINT booking_fr_inems FOREIGN KEY (item_id) REFERENCES inems(id) )"; expected "identifier"; SQL statement:
+CREATE TABLE IF NOT EXISTS booking ( id INT AUTO_INCREMENT PRIMARY KEY, start TIMESTAMP, end TIMESTAMP, item_id INT, booker INT, status VARCHAR(255), CONSTRAINT booking_fr_inems FOREIGN KEY (item_id) REFERENCES inems(id) ) [42001-214]
