@@ -10,6 +10,8 @@ import ru.practicum.shareit.item.storage.ItemStorage;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.storage.UserStorage;
 
+import java.util.List;
+
 
 @Component
 @Slf4j
@@ -28,5 +30,16 @@ public class BookingStorage {
         booking1.setBooker(user);
         booking1.setItem(item);
         return booking1;
+    }
+
+    public Booking getBookingById (Integer id){
+        return jpaBooking.getBookingById(id);
+    }
+    public List<Booking> getAllBookingUSers (Integer id){
+        return jpaBooking.findAllByBooker_Id(id);
+    }
+
+    public List<Booking> getAllBooking (){
+        return jpaBooking.findAll();
     }
 }

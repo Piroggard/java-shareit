@@ -1,9 +1,6 @@
 package ru.practicum.shareit.booking.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 import ru.practicum.shareit.item.model.Item;
@@ -20,6 +17,7 @@ import java.time.LocalDateTime;
 @Builder(toBuilder = true)
 @Entity
 @AllArgsConstructor
+@ToString
 @NoArgsConstructor
 @Table (name = "booking")
 public class Booking {
@@ -31,7 +29,6 @@ public class Booking {
     @Column(name = "end_of_booking")
     private LocalDateTime end;
     //@Column(name = "item_id")
-
 
     @ManyToOne (fetch = FetchType.EAGER)
     @JoinColumn (name = "item_id" )
@@ -47,4 +44,11 @@ public class Booking {
 
     @Column(name = "status")
     private Status status;
+
+    public Booking(int id, Item item, User booker, Status status) {
+        this.id = id;
+        this.item = item;
+        this.booker = booker;
+        this.status = status;
+    }
 }

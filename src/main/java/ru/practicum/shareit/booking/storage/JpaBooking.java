@@ -6,6 +6,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import ru.practicum.shareit.booking.model.Booking;
 
+import java.util.List;
+
 public interface JpaBooking extends JpaRepository<Booking , Integer> {
     /*@Query("SELECT b, i, u\n" +
             "FROM Booking b\n" +
@@ -14,4 +16,8 @@ public interface JpaBooking extends JpaRepository<Booking , Integer> {
             "WHERE b.id = :id")
     Booking getBooking (@Param("id") Integer id);*/
     Booking getBookingById(Integer id);
+    Booking findAllById (Integer id);
+    List<Booking> findAllByBooker_Id (Integer id);
+    //List<Booking> findAllByItem_Owner ();
+
 }

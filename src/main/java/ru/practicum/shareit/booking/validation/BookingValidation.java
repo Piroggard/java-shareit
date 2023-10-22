@@ -10,6 +10,8 @@ import ru.practicum.shareit.exception.ValidationException;
 import ru.practicum.shareit.exception.ValidationIdException;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.storage.ItemStorage;
+import ru.practicum.shareit.user.model.User;
+import ru.practicum.shareit.user.storage.UserStorage;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -19,6 +21,7 @@ import java.time.LocalDateTime;
 public class BookingValidation {
     BookingStorage bookingStorage;
     ItemStorage itemStorage;
+    UserStorage userStorage;
 
     public void checkItemAvailable (Integer idItem, BookingDto bookingDto) throws ItemAvailableException {
         Item item = itemStorage.getItem(idItem);
@@ -44,6 +47,13 @@ public class BookingValidation {
 
         if (!item.getAvailable()){
             throw new ItemAvailableException("Вешь недоступна для бронирования");
+        }
+    }
+
+    public void bookerValidation (Integer bookerId){
+        User user = userStorage.getUser(bookerId);
+        if (user == null){
+            throw new ValidationIdException("Нет такого пользователя");
         }
     }
 
