@@ -9,6 +9,8 @@ import ru.practicum.shareit.booking.model.Status;
 import ru.practicum.shareit.booking.storage.BookingStorage;
 import ru.practicum.shareit.booking.validation.BookingValidation;
 import ru.practicum.shareit.exception.ItemAvailableException;
+import ru.practicum.shareit.item.model.Item;
+import ru.practicum.shareit.user.model.User;
 
 @Slf4j
 @AllArgsConstructor
@@ -19,12 +21,14 @@ public class BookingServiseImpl implements BookingServise{
 
     @Override
     public Booking addBooking(BookingDto bookingDto , Integer booker ) throws ItemAvailableException {
+        Item item = Item.builder().id(bookingDto.getItemId()).build();
+        User user = User.builder().id(booker).build();
         bookingValidation.checkItemAvailable(bookingDto.getItemId(), bookingDto);
         Booking booking = Booking.builder().
-                itemId(bookingDto.getItemId()).
+                item(item).
                 start(bookingDto.getStart()).
                 end(bookingDto.getEnd()).
-                booker(booker).
+                booker(user).
                 status(Status.WAITING).
                 build();
         return bookingStorage.addBooking(booking);

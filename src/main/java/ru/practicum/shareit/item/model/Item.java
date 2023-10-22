@@ -15,7 +15,7 @@ import javax.persistence.*;
 @EqualsAndHashCode
 @Builder(toBuilder = true)
 @Entity
-@Table(name = "inems")
+@Table(name = "items")
 public class Item {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,6 +30,4 @@ public class Item {
     private int owner;
     @Column(name = "request")
     private String request;
-
-
 }

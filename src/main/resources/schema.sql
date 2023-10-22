@@ -4,7 +4,7 @@ CREATE TABLE IF NOT EXISTS users (
     email VARCHAR(255)
 );
 
-CREATE TABLE IF NOT EXISTS inems (
+CREATE TABLE IF NOT EXISTS items (
     id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
     description VARCHAR(255),
@@ -20,6 +20,6 @@ CREATE TABLE IF NOT EXISTS booking (
     item_id INT,
     booker_id INT,
     status VARCHAR(255),
-    CONSTRAINT booking_fr_inems FOREIGN KEY (item_id) REFERENCES inems(id),
+    CONSTRAINT booking_fr_items FOREIGN KEY (item_id) REFERENCES items(id),
     CONSTRAINT booking_fr_user FOREIGN KEY (booker_id) REFERENCES users(id)
 );
