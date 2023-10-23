@@ -52,6 +52,12 @@ public class ValidationExceptionsHandler {
     public Map<String, String> checkItemAvailable(final ItemAvailableException e) {
         return Map.of("Error", e.getMessage());
     }
+    /*@ExceptionHandler
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public Map<String, String> checkItemAvailable(final NullPointerException e) {
+        return Map.of("Error", e.getMessage());
+    }*/
+
 
 
 }
