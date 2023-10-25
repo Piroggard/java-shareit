@@ -37,20 +37,21 @@ public class BookingStorage {
     public Booking getBookingById (Integer id){
         return jpaBooking.getBookingByIdOrderByStart(id);
     }
-    public List<Booking> getAllBookingUSers (Integer id){
-        return jpaBooking.findAllByBooker_Id(id);
+    public List<Booking> getAllBookingUsers (Integer id){
+        return jpaBooking.findAllByBooker_IdOrderByStartDesc(id);
     }
 
-    public List<Booking> getAllBooking (){
-        return jpaBooking.findAll();
+    public List<Booking> getAllBooking ( Integer id){
+        return jpaBooking.findAllByOrderByStart();
     }
 
     public List<Booking> getBookingByOwner (Integer idOwner){
-        return jpaBooking.findAllByItem_Owner(idOwner);
+
+        return jpaBooking.findBookingByItem_OwnerOrderByStartDesc(idOwner);
     }
 
-    public List<Booking> findBookingsWithFutureStartTime (){
-        return jpaBooking.findBookingsWithFutureStartTime();
+    public List<Booking> findBookingsWithFutureStartTime (Integer id){
+        return jpaBooking.findBookingsWithFutureStartTime(id);
     }
 
     public List<Booking> findAllByStatus (Status status){

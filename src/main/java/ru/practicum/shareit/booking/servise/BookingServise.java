@@ -4,6 +4,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.exception.ItemAvailableException;
+import ru.practicum.shareit.exception.StatusException;
 
 import java.util.List;
 
@@ -16,8 +17,8 @@ public interface BookingServise {
 
     List <Booking> getAll ();
 
-    List <Booking> getBookingByState (String state);
+    List <Booking> getBookingByState (String state , Integer id) throws StatusException;
 
 
-    public List<Booking> getBookingByOwner (Integer idOwner);
+    public List<Booking> getBookingByOwner (String state , Integer idOwner) throws StatusException;
 }

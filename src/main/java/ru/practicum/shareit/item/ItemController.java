@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.item.dto.ItemDtoResponse;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.service.ItemService;
 
@@ -33,12 +34,14 @@ public class ItemController {
     }
 
     @GetMapping("{itemId}")
-    public Item getItem(@PathVariable Integer itemId) {
-        return itemService.getItem(itemId);
+    public ItemDtoResponse getItem(@RequestHeader("X-Sharer-User-Id") Integer id, @PathVariable Integer itemId) {
+        log.info("Метод - getItem, ");
+        return itemService.getItem(itemId , id);
     }
 
     @GetMapping
     public List<Item> getItemUser(@RequestHeader("X-Sharer-User-Id") Integer id) {
+        log.info("getItemUser");
         return itemService.getItemUser(id);
     }
 

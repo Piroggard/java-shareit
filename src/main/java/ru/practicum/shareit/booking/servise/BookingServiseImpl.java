@@ -10,6 +10,9 @@ import ru.practicum.shareit.booking.storage.BookingStorage;
 import ru.practicum.shareit.booking.storage.JpaBooking;
 import ru.practicum.shareit.booking.validation.BookingValidation;
 import ru.practicum.shareit.exception.ItemAvailableException;
+import ru.practicum.shareit.exception.StatusException;
+import ru.practicum.shareit.exception.ValidationException;
+import ru.practicum.shareit.exception.ValidationIdException;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.service.UserService;
@@ -76,25 +79,24 @@ public class BookingServiseImpl implements BookingServise{
     public List<Booking> getAllBookingUSers(Integer userId) {
         bookingValidation.checkBookerOrOwerUser(userId);
 
-        return bookingStorage.getAllBookingUSers(userId);
+        return bookingStorage.getAllBookingUsers(userId);
     }
 
     @Override
     public List<Booking> getAll() {
-        return bookingStorage.getAllBooking();
+        return bookingStorage.getAllBooking(1);
     }
 
     @Override
-    public List<Booking> getBookingByState(String state) {
+    public List<Booking> getBookingByState(String state , Integer id) throws StatusException {
         if (state.equals("ALL")){
-            return bookingStorage.getAllBooking();
+            return bookingStorage.getAllBookingUsers(id);
         }
         if (state.equals("FUTURE")){
-            return bookingStorage.findBookingsWithFutureStartTime();
-
+            return bookingStorage.findBookingsWithFutureStartTime(id);
         }
         if (state.equals("UNSUPPORTED_STATUS")){
-
+            throw new StatusException("Unknown state: UNSUPPORTED_STATUS");
         }
         if (state.equals("WAITING")){
             return bookingStorage.findAllByStatus(Status.WAITING);
@@ -107,9 +109,22 @@ public class BookingServiseImpl implements BookingServise{
 
     }
     @Override
-    public List<Booking> getBookingByOwner(Integer idOwner) {
+    public List<Booking> getBookingByOwner(String state , Integer idOwner) throws StatusException {
         bookingValidation.checkBookerOrOwerUser(idOwner);
-        return bookingStorage.getBookingByOwner(idOwner);
+        if (state == null){
+            return bookingStorage.getBookingByOwner(idOwner);
+        }
+        if (state.equals("ALL")){
+            return bookingStorage.getBookingByOwner(idOwner);
+        }
+        if (state.equals("FUTURE")){
+            return jpaBooking.findBooking(idOwner);
+        }
+        if (state.equals("UNSUPPORTED_STATUS")){
+            throw new StatusException("Unknown state: UNSUPPORTED_STATUS");
+        }
+        return null;
+
     }
 
 }

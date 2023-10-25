@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.item.dto.ItemDtoResponse;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.storage.ItemStorage;
 import ru.practicum.shareit.item.validation.ItemValidation;
@@ -52,10 +53,11 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public Item getItem(Integer itemId) {
-        Item item = itemStorage.getItem(itemId);
-        itemValidation.checkingDataNull(item);
-        return item;
+    public ItemDtoResponse getItem(Integer itemId, Integer id) {
+        //Item itemList = itemStorage.getItem(itemId);
+        ItemDtoResponse itemList = itemStorage.getItemAndBooking(itemId , id);
+        itemValidation.checkingDataNull(itemList);
+        return itemList;
     }
 
     @Override

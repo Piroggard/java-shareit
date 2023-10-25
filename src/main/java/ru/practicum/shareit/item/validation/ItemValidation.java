@@ -6,10 +6,13 @@ import org.springframework.stereotype.Component;
 import ru.practicum.shareit.exception.ValidationData;
 import ru.practicum.shareit.exception.ValidationIdException;
 import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.item.dto.ItemDtoResponse;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.storage.ItemStorage;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.storage.UserStorage;
+
+import java.util.List;
 
 @AllArgsConstructor
 @Slf4j
@@ -30,10 +33,13 @@ public class ItemValidation {
         }
     }
 
-    public void checkingDataNull (Item item){
-        if (item == null){
-            throw new ValidationIdException("Вещь не найдена ");
-        }
+    public void checkingDataNull (ItemDtoResponse item){
+
+            if (item == null){
+                throw new ValidationIdException("Вещь не найдена ");
+            }
+
+
     }
 
     public void checkItem(ItemDto itemDto) {

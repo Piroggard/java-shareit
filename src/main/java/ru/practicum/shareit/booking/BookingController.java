@@ -8,6 +8,7 @@ import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.servise.BookingServise;
 import ru.practicum.shareit.exception.ItemAvailableException;
+import ru.practicum.shareit.exception.StatusException;
 import ru.practicum.shareit.item.dto.ItemDto;
 
 import java.util.List;
@@ -47,21 +48,22 @@ public class BookingController {
 
     @GetMapping
     public List<Booking> getAllBookingUser (@RequestHeader("X-Sharer-User-Id") Integer id ,
-                                            @RequestParam(name = "state" , required = false) String state){
+                                            @RequestParam(name = "state" , required = false) String state) throws StatusException {
         log.info("Вызов метода получения информации. Заголовок {}, Статус {}" , id , state);
         if (state == null){
             return bookingServise.getAllBookingUSers(id);
         } else {
-            return bookingServise.getBookingByState(state);
+            return bookingServise.getBookingByState(state , id);
         }
-
-
 
     }
 
     @GetMapping("owner")
-    public List<Booking> getBookingByOwner (@RequestHeader("X-Sharer-User-Id") Integer idOwner){
-        return bookingServise.getBookingByOwner(idOwner);
+    public List<Booking> getBookingByOwner (@RequestHeader("X-Sharer-User-Id") Integer idOwner,
+                                            @RequestParam(name = "state" , required = false) String state) throws StatusException {
+        log.info("Вызов метода получения информации об Owner. Заголовок {}, Статус {}" , idOwner , state);
+
+        return bookingServise.getBookingByOwner(state, idOwner);
     }
 
 

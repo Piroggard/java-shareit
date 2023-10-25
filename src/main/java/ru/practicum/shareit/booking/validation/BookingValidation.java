@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.model.Booking;
+import ru.practicum.shareit.booking.model.Status;
 import ru.practicum.shareit.booking.storage.BookingStorage;
 import ru.practicum.shareit.exception.ItemAvailableException;
 import ru.practicum.shareit.exception.ValidationData;
@@ -93,10 +94,15 @@ public class BookingValidation {
 
     public void checIdkBookerUpdate ( Integer bookingId , Boolean approved){
         Booking booking = bookingStorage.getBookingById(bookingId);
-        if (booking.getStatus().equals("APPROVED")){
-            throw new ValidationIdException("Данные уже обновлены ");
-        }
+        log.info(""+ booking.getStatus() );
+        log.info(""+ approved);
+        if (approved && booking.getStatus() == Status.APPROVED){
 
+                throw new ValidationData("Данные уже обновлены ");
+
+
+
+        }
     }
 
     public void checOwner ( Integer ownerId , Integer itemId){
@@ -104,7 +110,6 @@ public class BookingValidation {
         if (item.getOwner() == ownerId){
             throw new ValidationIdException("Сам на себя создает бронирование, ну бред же ");
         }
-
     }
 
 }

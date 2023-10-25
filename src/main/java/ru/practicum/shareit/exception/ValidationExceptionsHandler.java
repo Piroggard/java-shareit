@@ -52,11 +52,11 @@ public class ValidationExceptionsHandler {
     public Map<String, String> checkItemAvailable(final ItemAvailableException e) {
         return Map.of("Error", e.getMessage());
     }
-    /*@ExceptionHandler
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public Map<String, String> checkItemAvailable(final NullPointerException e) {
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public Map<String, String> checkStatus(final StatusException e) {
         return Map.of("Error", e.getMessage());
-    }*/
+    }
 
 
 
