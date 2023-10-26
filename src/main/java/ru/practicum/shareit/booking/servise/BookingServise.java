@@ -20,5 +20,5 @@ public interface BookingServise {
     List <Booking> getBookingByState (String state , Integer id) throws StatusException;
 
 
-    public List<Booking> getBookingByOwner (String state , Integer idOwner) throws StatusException;
+    List<Booking> getBookingByOwner (String state , Integer idOwner) throws StatusException;
 }

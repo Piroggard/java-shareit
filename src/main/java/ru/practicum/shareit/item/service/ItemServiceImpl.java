@@ -61,14 +61,9 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public List<Item> getItemUser(Integer userId) {
-        List<Item> itemList = new ArrayList<>();
-        for (Item item : itemStorage.getItems()) {
-            if (item.getOwner() == userId) {
-                itemList.add(item);
-            }
-        }
-        return itemList;
+    public List<ItemDtoResponse> getItemUser(Integer userId) {
+        return itemStorage.getItemUser(userId);
+
     }
 
     @Override

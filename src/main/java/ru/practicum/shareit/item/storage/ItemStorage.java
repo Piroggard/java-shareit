@@ -58,32 +58,12 @@ public class ItemStorage {
 
             bookingConciseLast  = BookingConcise.builder().id(nextBooking.getId())
                     .bookerId(nextBooking.getBooker().getId()).build();
-
-
             bookingConciseNext = BookingConcise.builder().id(lastBooking.getId())
                     .bookerId(lastBooking.getBooker().getId()).build();
-
-
         } else {
             bookingConciseLast = null;
             bookingConciseNext = null;
         }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
         ItemDtoResponse itemDtoResponse = ItemDtoResponse.builder().id(item.getId())
                 .name(item.getName())
                 .description(item.getDescription())
@@ -92,10 +72,51 @@ public class ItemStorage {
                 .request(item.getRequest())
                 .nextBooking(bookingConciseLast)
                 .lastBooking(bookingConciseNext).build();
-
-
-
-
         return itemDtoResponse;
     }
+    public List<ItemDtoResponse> getItemUser(Integer userId) {
+        List<ItemDtoResponse> itemDtoResponses = new ArrayList<>();
+        List<Item> itemList = jpaItemRepository.findAllByOwner(userId);
+
+        for (Item item : itemList) {
+            LocalDateTime localDateTime = LocalDateTime.now();
+            Booking nextBooking = jpaBooking.findFirstByItemIdAndStatusAndStartIsAfterOrStartEqualsOrderByStart(item.getId()
+                    , Status.APPROVED , localDateTime, localDateTime);
+            Booking lastBooking = jpaBooking.findFirstByItemIdAndStatusAndStartIsBeforeOrStartEqualsOrderByEndDesc(item.getId()
+                    , Status.APPROVED , localDateTime, localDateTime);
+            BookingConcise bookingConciseLast;
+            BookingConcise bookingConciseNext;
+
+            if (lastBooking != null || nextBooking != null){
+
+
+                bookingConciseLast  = BookingConcise.builder().id(nextBooking.getId())
+                        .bookerId(nextBooking.getBooker().getId()).build();
+                bookingConciseNext = BookingConcise.builder().id(lastBooking.getId())
+                        .bookerId(lastBooking.getBooker().getId()).build();
+            } else {
+                bookingConciseLast = null;
+                bookingConciseNext = null;
+            }
+
+            ItemDtoResponse itemDtoResponse = ItemDtoResponse.builder().id(item.getId())
+                    .name(item.getName())
+                    .description(item.getDescription())
+                    .available(item.getAvailable())
+                    .owner(item.getOwner())
+                    .request(item.getRequest())
+                    .nextBooking(bookingConciseLast)
+                    .lastBooking(bookingConciseNext).build();
+
+            itemDtoResponses.add(itemDtoResponse);
+            nextBooking = null;
+            lastBooking = null;
+            bookingConciseNext = null;
+            bookingConciseLast = null;
+
+
+        }
+        return itemDtoResponses;
+    }
+
 }

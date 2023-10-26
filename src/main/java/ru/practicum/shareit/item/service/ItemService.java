@@ -13,7 +13,7 @@ public interface ItemService {
 
     ItemDtoResponse getItem(Integer itemId , Integer id);
 
-    List<Item> getItemUser(Integer itemId);
+    List<ItemDtoResponse> getItemUser(Integer itemId);
 
     List<Item> getItemByName(String text);
 }

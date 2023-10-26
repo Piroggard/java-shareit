@@ -40,7 +40,7 @@ public class ItemController {
     }
 
     @GetMapping
-    public List<Item> getItemUser(@RequestHeader("X-Sharer-User-Id") Integer id) {
+    public List<ItemDtoResponse> getItemUser(@RequestHeader("X-Sharer-User-Id") Integer id) {
         log.info("getItemUser");
         return itemService.getItemUser(id);
     }

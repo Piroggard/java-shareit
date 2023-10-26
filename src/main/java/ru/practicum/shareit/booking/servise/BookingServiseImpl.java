@@ -103,7 +103,7 @@ public class BookingServiseImpl implements BookingServise{
         }
 
         if (state.equals("REJECTED")){
-            return bookingStorage.findAllByStatus(Status.REJECTED);
+            return bookingStorage.findAllByItem_OwnerOrStatus( id , Status.REJECTED);
         }
         return null;
 
@@ -122,6 +122,13 @@ public class BookingServiseImpl implements BookingServise{
         }
         if (state.equals("UNSUPPORTED_STATUS")){
             throw new StatusException("Unknown state: UNSUPPORTED_STATUS");
+        }
+        if (state.equals("WAITING")){
+            return bookingStorage.findAllByStatus(Status.WAITING);
+        }
+
+        if (state.equals("REJECTED")){
+            return bookingStorage.findAllByItem_OwnerOrStatusWaiting( idOwner , Status.REJECTED);
         }
         return null;
 

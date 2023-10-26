@@ -19,6 +19,9 @@ public interface JpaBooking extends JpaRepository<Booking , Integer> {
     List<Booking> findAllByOrderByStart ();
     List<Booking> findAllByStatus (Status status);
 
+    List<Booking> findAllByItem_OwnerAndStatus (Integer id , Status status);
+   List<Booking> findAllByBooker_IdAndStatus(Integer id , Status status);
+
     List<Booking> findBookingByItem_OwnerOrderByStartDesc (Integer idOwner);
 
     @Query(value = "SELECT b FROM Booking b WHERE b.start > CURRENT_TIMESTAMP ORDER BY b.start desc ")
