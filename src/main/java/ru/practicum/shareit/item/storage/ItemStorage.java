@@ -34,9 +34,7 @@ public class ItemStorage {
 
         return jpaItemRepository.findAll();
     }
- /*   public Item getItemList(Integer id) {
-        return jpaItemRepository.findAllByOwner(id);
-    }*/
+
 
 
 
@@ -55,11 +53,28 @@ public class ItemStorage {
         Booking lastBooking = jpaBooking.findFirstByItemIdAndStatusAndStartIsBeforeOrStartEqualsOrderByEndDesc(id
                 , Status.APPROVED , localDateTime, localDateTime);
 
-        BookingConcise bookingConciseLast;
-        BookingConcise bookingConciseNext;
+        BookingConcise bookingConciseLast = null;
+        BookingConcise bookingConciseNext = null;
+
 
         if (item.getOwner() == ownerId){
-            try {
+            if (nextBooking == null){
+                bookingConciseNext = null;
+            } else {
+                bookingConciseLast  = BookingConcise.builder().id(nextBooking.getId())
+                        .bookerId(nextBooking.getBooker().getId()).build();
+            }
+
+            if (lastBooking == null){
+                bookingConciseLast = null;
+            } else {
+                bookingConciseNext = BookingConcise.builder().id(lastBooking.getId())
+                        .bookerId(lastBooking.getBooker().getId()).build();
+            }
+            
+
+
+            /*try {
                 bookingConciseLast  = BookingConcise.builder().id(nextBooking.getId())
                         .bookerId(nextBooking.getBooker().getId()).build();
                 bookingConciseNext = BookingConcise.builder().id(lastBooking.getId())
@@ -67,7 +82,7 @@ public class ItemStorage {
             } catch (NullPointerException nullPointerException){
                 bookingConciseLast = null;
                 bookingConciseNext = null;
-            }
+            }*/
 
 
         } else {

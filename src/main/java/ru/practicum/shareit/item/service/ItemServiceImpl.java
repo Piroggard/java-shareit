@@ -64,7 +64,6 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public ItemDtoResponse getItem(Integer itemId, Integer id) {
-        //Item itemList = itemStorage.getItem(itemId);
         itemValidation.checItemId(itemId);
         ItemDtoResponse itemList = itemStorage.getItemAndBooking(itemId , id);
         itemValidation.checkingDataNull(itemList);
