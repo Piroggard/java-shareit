@@ -9,6 +9,7 @@ import ru.practicum.shareit.user.model.User;
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Comparator;
 
 /**
  * TODO Sprint add-bookings.
@@ -20,7 +21,7 @@ import java.time.LocalDateTime;
 @ToString
 @NoArgsConstructor
 @Table (name = "booking")
-public class Booking {
+public class Booking implements Comparable <Booking> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
@@ -50,5 +51,12 @@ public class Booking {
         this.item = item;
         this.booker = booker;
         this.status = status;
+    }
+
+
+
+    @Override
+    public int compareTo(Booking otherBooking) {
+        return Integer.compare(this.id, otherBooking.id);
     }
 }

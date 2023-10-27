@@ -7,6 +7,8 @@ import ru.practicum.shareit.booking.model.BookingConcise;
 import ru.practicum.shareit.booking.model.Status;
 import ru.practicum.shareit.booking.storage.JpaBooking;
 import ru.practicum.shareit.item.dto.ItemDtoResponse;
+import ru.practicum.shareit.item.model.Comment;
+import ru.practicum.shareit.item.model.CommentDto;
 import ru.practicum.shareit.item.model.Item;
 
 import java.time.LocalDateTime;
@@ -17,6 +19,8 @@ import java.util.*;
 public class ItemStorage {
     JpaItemRepository jpaItemRepository;
     JpaBooking jpaBooking;
+    JpaCommentRepository jpaCommentRepository;
+
 
 
 
@@ -41,7 +45,7 @@ public class ItemStorage {
         return jpaItemRepository.findItemById(id);
     }
 
-    public ItemDtoResponse getItemAndBooking(Integer id, Integer ownerId) {
+    public ItemDtoResponse getItemAndBooking(Integer id, Integer ownerId ) {
         LocalDateTime localDateTime = LocalDateTime.now();
 
         Item item = jpaItemRepository.findItemById(id);
@@ -55,15 +59,33 @@ public class ItemStorage {
         BookingConcise bookingConciseNext;
 
         if (item.getOwner() == ownerId){
+            try {
+                bookingConciseLast  = BookingConcise.builder().id(nextBooking.getId())
+                        .bookerId(nextBooking.getBooker().getId()).build();
+                bookingConciseNext = BookingConcise.builder().id(lastBooking.getId())
+                        .bookerId(lastBooking.getBooker().getId()).build();
+            } catch (NullPointerException nullPointerException){
+                bookingConciseLast = null;
+                bookingConciseNext = null;
+            }
 
-            bookingConciseLast  = BookingConcise.builder().id(nextBooking.getId())
-                    .bookerId(nextBooking.getBooker().getId()).build();
-            bookingConciseNext = BookingConcise.builder().id(lastBooking.getId())
-                    .bookerId(lastBooking.getBooker().getId()).build();
+
         } else {
             bookingConciseLast = null;
             bookingConciseNext = null;
         }
+            List<CommentDto> commentDtoList = new ArrayList<>();
+        List<Comment> comments = jpaCommentRepository.findAllByItem_Id(item.getId());
+        for (Comment comment : comments) {
+            CommentDto commentDto = CommentDto.builder()
+                    .id(comment.getId())
+                    .text(comment.getText())
+                    .itemId(comment.getItem().getId())
+                    .authorName(comment.getAuthor().getName())
+                    .created(comment.getCreated()).build();
+            commentDtoList.add(commentDto);
+        }
+
         ItemDtoResponse itemDtoResponse = ItemDtoResponse.builder().id(item.getId())
                 .name(item.getName())
                 .description(item.getDescription())
@@ -71,8 +93,10 @@ public class ItemStorage {
                 .owner(item.getOwner())
                 .request(item.getRequest())
                 .nextBooking(bookingConciseLast)
+                .comments(commentDtoList)
                 .lastBooking(bookingConciseNext).build();
         return itemDtoResponse;
+
     }
     public List<ItemDtoResponse> getItemUser(Integer userId) {
         List<ItemDtoResponse> itemDtoResponses = new ArrayList<>();

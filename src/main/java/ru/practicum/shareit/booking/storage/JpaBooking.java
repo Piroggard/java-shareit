@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.model.Status;
+import ru.practicum.shareit.item.model.Item;
 
 import java.security.Timestamp;
 import java.time.LocalDateTime;
@@ -18,6 +19,8 @@ public interface JpaBooking extends JpaRepository<Booking , Integer> {
     List<Booking> findBookingsWithFutureStartTime(Integer id);
     List<Booking> findAllByOrderByStart ();
     List<Booking> findAllByStatus (Status status);
+
+    Booking getBookingByItem_Id (Integer item);
 
     List<Booking> findAllByItem_OwnerAndStatus (Integer id , Status status);
    List<Booking> findAllByBooker_IdAndStatus(Integer id , Status status);
@@ -36,5 +39,7 @@ public interface JpaBooking extends JpaRepository<Booking , Integer> {
 
     Booking findFirstByItemIdAndStatusAndStartIsBeforeOrStartEqualsOrderByEndDesc( Integer id, Status status, LocalDateTime localDateTime,
                                                  LocalDateTime localDateTime1);
+
+    List <Booking> findAllByBooker_IdAndItem_Id (Integer userId , Integer itemId);
 
 }

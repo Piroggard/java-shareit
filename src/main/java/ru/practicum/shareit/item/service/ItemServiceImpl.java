@@ -4,12 +4,19 @@ import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import ru.practicum.shareit.booking.storage.JpaBooking;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemDtoResponse;
+import ru.practicum.shareit.item.model.Comment;
+import ru.practicum.shareit.item.model.CommentDto;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.storage.ItemStorage;
+import ru.practicum.shareit.item.storage.JpaCommentRepository;
 import ru.practicum.shareit.item.validation.ItemValidation;
+import ru.practicum.shareit.user.model.User;
+import ru.practicum.shareit.user.storage.UserStorage;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,6 +27,9 @@ import java.util.List;
 public class ItemServiceImpl implements ItemService {
     private final ItemStorage itemStorage;
     private final ItemValidation itemValidation;
+    private JpaCommentRepository jpaCommentRepository;
+    private UserStorage userStorage;
+
 
 
 
@@ -55,6 +65,7 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public ItemDtoResponse getItem(Integer itemId, Integer id) {
         //Item itemList = itemStorage.getItem(itemId);
+        itemValidation.checItemId(itemId);
         ItemDtoResponse itemList = itemStorage.getItemAndBooking(itemId , id);
         itemValidation.checkingDataNull(itemList);
         return itemList;
@@ -73,14 +84,35 @@ public class ItemServiceImpl implements ItemService {
             return itemList;
         }
         String textToLower = text.toLowerCase();
-
-
         for (Item item : itemStorage.getItems()) {
             if (item.getAvailable() && (item.getName().toLowerCase().contains(textToLower) || item.getDescription().toLowerCase().contains(textToLower))) {
                 itemList.add(item);
             }
         }
         return itemList;
+    }
+
+    @Override
+    public CommentDto addComment(Integer idUser, Integer itemId, CommentDto commentDto) {
+        itemValidation.checkComment(commentDto.getText(), itemId);
+        itemValidation.checkCommentBoocking(idUser, itemId);
+        LocalDateTime localDateTime = LocalDateTime.now();
+        Item item = itemStorage.getItem(itemId);
+        User user = userStorage.getUser(idUser);
+
+        Comment comment = Comment.builder().text(commentDto.getText())
+                .item(item)
+                .author(user)
+                .created(localDateTime).build();
+        Comment comment1 =  jpaCommentRepository.save(comment);
+
+        CommentDto commentDto1 = CommentDto.builder()
+                .id(comment1.getId())
+                .text(comment1.getText())
+                .itemId(comment1.getItem().getId())
+                .authorName(comment1.getAuthor().getName())
+                .created(comment1.getCreated()).build();
+        return commentDto1;
     }
 
 

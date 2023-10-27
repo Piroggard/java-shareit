@@ -10,5 +10,7 @@ public interface JpaItemRepository extends JpaRepository<Item , Integer> {
 
     //Item findAllByOwner (Integer id);
 
+   // Item findAllBy
+
     List <Item> findAllByOwner (Integer id);
 }

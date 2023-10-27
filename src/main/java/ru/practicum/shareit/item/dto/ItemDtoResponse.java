@@ -2,8 +2,12 @@ package ru.practicum.shareit.item.dto;
 
 import lombok.*;
 import ru.practicum.shareit.booking.model.BookingConcise;
+import ru.practicum.shareit.item.model.Comment;
+import ru.practicum.shareit.item.model.CommentDto;
 
 import javax.persistence.*;
+import java.util.List;
+
 @Setter
 @Getter
 @AllArgsConstructor
@@ -19,6 +23,7 @@ public class ItemDtoResponse {
     private String request;
     private BookingConcise lastBooking;
     private BookingConcise nextBooking;
+    private List <CommentDto> comments;
 }
 
 

@@ -65,4 +65,6 @@ public class BookingStorage {
     public List<Booking> findAllByItem_OwnerOrStatusWaiting (Integer id , Status status){
         return jpaBooking.findAllByItem_OwnerAndStatus(id, status);
     }
+
+
 }

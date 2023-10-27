@@ -14,6 +14,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 @EqualsAndHashCode
 @Builder(toBuilder = true)
+@ToString
 @Entity
 @Table(name = "items")
 public class Item {

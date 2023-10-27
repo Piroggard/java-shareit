@@ -19,6 +19,9 @@ import ru.practicum.shareit.user.service.UserService;
 import ru.practicum.shareit.user.validation.UserValidation;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 @Slf4j
@@ -105,6 +108,38 @@ public class BookingServiseImpl implements BookingServise{
         if (state.equals("REJECTED")){
             return bookingStorage.findAllByItem_OwnerOrStatus( id , Status.REJECTED);
         }
+
+        if (state.equals("CURRENT")){
+            List<Booking> bookingList = bookingStorage.getAllBookingUsers(id);
+            List<Booking> list = new ArrayList<>();
+            LocalDateTime localDateTime = LocalDateTime.now();
+
+            for (Booking booking : bookingList) {
+                 if (booking.getStart().isBefore(localDateTime) && booking.getEnd().isAfter(localDateTime)){
+                     System.out.println(1);
+                     list.add(booking);
+                 }
+            }
+            Collections.sort(list);
+            System.out.println(bookingList);
+            return list;
+        }
+
+        if (state.equals("PAST")){
+            List<Booking> bookingList = bookingStorage.getAllBookingUsers(id);
+            List<Booking> list = new ArrayList<>();
+            LocalDateTime localDateTime = LocalDateTime.now();
+
+            for (Booking booking : bookingList) {
+                if (booking.getEnd().isBefore(localDateTime)){
+                    System.out.println(1);
+                    list.add(booking);
+                }
+            }
+            //Collections.sort(list);
+            System.out.println(bookingList);
+            return list;
+        }
         return null;
 
     }
@@ -129,6 +164,26 @@ public class BookingServiseImpl implements BookingServise{
 
         if (state.equals("REJECTED")){
             return bookingStorage.findAllByItem_OwnerOrStatusWaiting( idOwner , Status.REJECTED);
+        }
+
+        if (state.equals("CURRENT")){
+            return bookingStorage.findAllByItem_OwnerOrStatusWaiting( idOwner , Status.REJECTED);
+        }
+
+        if (state.equals("PAST")){
+            List<Booking> bookingList = bookingStorage.getBookingByOwner(idOwner);
+            List<Booking> list = new ArrayList<>();
+            LocalDateTime localDateTime = LocalDateTime.now();
+
+            for (Booking booking : bookingList) {
+                if (booking.getEnd().isBefore(localDateTime)){
+                    System.out.println(1);
+                    list.add(booking);
+                }
+            }
+            //Collections.sort(list);
+            System.out.println(bookingList);
+            return list;
         }
         return null;
 

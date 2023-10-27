@@ -23,3 +23,14 @@ CREATE TABLE IF NOT EXISTS booking (
     CONSTRAINT booking_fr_items FOREIGN KEY (item_id) REFERENCES items(id),
     CONSTRAINT booking_fr_user FOREIGN KEY (booker_id) REFERENCES users(id)
 );
+
+
+CREATE TABLE IF NOT EXISTS comment (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    text VARCHAR(255) NOT NULL,
+    item_id INT,
+    author_id INT,
+    created TIMESTAMP,
+    CONSTRAINT comment_fr_items FOREIGN KEY (item_id) REFERENCES items(id),
+    CONSTRAINT comment_fr_user FOREIGN KEY (author_id) REFERENCES users(id)
+);

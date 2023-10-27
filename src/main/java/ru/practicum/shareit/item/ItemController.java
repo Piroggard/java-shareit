@@ -5,9 +5,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemDtoResponse;
+import ru.practicum.shareit.item.model.Comment;
+import ru.practicum.shareit.item.model.CommentDto;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.service.ItemService;
 
+import javax.validation.Valid;
 import java.util.List;
 
 /**
@@ -49,5 +52,15 @@ public class ItemController {
     public List<Item> getItemByName(@RequestParam(name = "text") String text) {
         return itemService.getItemByName(text);
     }
+
+    @PostMapping("{itemId}/comment")
+    public CommentDto addComment (@RequestHeader("X-Sharer-User-Id") Integer id ,
+                               @PathVariable Integer itemId,
+                               @Valid @RequestBody CommentDto commentDto){
+        log.info("addComment id {},itemId {}, text {}", id , itemId , commentDto.getText() );
+
+        return itemService.addComment(id, itemId, commentDto);
+    }
+
 
 }
