@@ -35,13 +35,13 @@ public class BookingServiseImpl implements BookingServise {
         bookingValidation.checOwner(booker, bookingDto.getItemId());
         bookingValidation.bookerValidation(booker);
 
-        Booking booking = Booking.builder().
-                item(item).
-                start(bookingDto.getStart()).
-                end(bookingDto.getEnd()).
-                booker(user).
-                status(Status.WAITING).
-                build();
+        Booking booking = Booking.builder()
+                .item(item)
+                .start(bookingDto.getStart())
+                .end(bookingDto.getEnd())
+                .booker(user)
+                .status(Status.WAITING)
+                .build();
         return bookingStorage.addBooking(booking);
     }
 

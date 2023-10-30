@@ -42,10 +42,9 @@ public class ItemStorage {
 
         Item item = jpaItemRepository.findItemById(id);
 
-        Booking nextBooking = jpaBooking.findFirstByItemIdAndStatusAndStartIsAfterOrStartEqualsOrderByStart(id
-                , Status.APPROVED, localDateTime, localDateTime);
-        Booking lastBooking = jpaBooking.
-                findFirstByItemIdAndStatusAndStartIsBeforeOrStartEqualsOrderByEndDesc(id,
+        Booking nextBooking = jpaBooking.findFirstByItemIdAndStatusAndStartIsAfterOrStartEqualsOrderByStart(id,
+                Status.APPROVED, localDateTime, localDateTime);
+        Booking lastBooking = jpaBooking.findFirstByItemIdAndStatusAndStartIsBeforeOrStartEqualsOrderByEndDesc(id,
                         Status.APPROVED, localDateTime, localDateTime);
 
         BookingConcise bookingConciseLast = null;
@@ -104,11 +103,11 @@ public class ItemStorage {
         for (Item item : itemList) {
             LocalDateTime localDateTime = LocalDateTime.now();
             Booking nextBooking = jpaBooking.
-                    findFirstByItemIdAndStatusAndStartIsAfterOrStartEqualsOrderByStart(item.getId()
-                            , Status.APPROVED, localDateTime, localDateTime);
+                    findFirstByItemIdAndStatusAndStartIsAfterOrStartEqualsOrderByStart(item.getId(),
+                            Status.APPROVED, localDateTime, localDateTime);
             Booking lastBooking = jpaBooking.
-                    findFirstByItemIdAndStatusAndStartIsBeforeOrStartEqualsOrderByEndDesc(item.getId()
-                            , Status.APPROVED, localDateTime, localDateTime);
+                    findFirstByItemIdAndStatusAndStartIsBeforeOrStartEqualsOrderByEndDesc(item.getId(),
+                            Status.APPROVED, localDateTime, localDateTime);
             BookingConcise bookingConciseLast;
             BookingConcise bookingConciseNext;
 
