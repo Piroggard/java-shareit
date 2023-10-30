@@ -102,11 +102,11 @@ public class ItemStorage {
 
         for (Item item : itemList) {
             LocalDateTime localDateTime = LocalDateTime.now();
-            Booking nextBooking = jpaBooking.
-                    findFirstByItemIdAndStatusAndStartIsAfterOrStartEqualsOrderByStart(item.getId(),
+            Booking nextBooking = jpaBooking
+                    .findFirstByItemIdAndStatusAndStartIsAfterOrStartEqualsOrderByStart(item.getId(),
                             Status.APPROVED, localDateTime, localDateTime);
-            Booking lastBooking = jpaBooking.
-                    findFirstByItemIdAndStatusAndStartIsBeforeOrStartEqualsOrderByEndDesc(item.getId(),
+            Booking lastBooking = jpaBooking
+                    .findFirstByItemIdAndStatusAndStartIsBeforeOrStartEqualsOrderByEndDesc(item.getId(),
                             Status.APPROVED, localDateTime, localDateTime);
             BookingConcise bookingConciseLast;
             BookingConcise bookingConciseNext;

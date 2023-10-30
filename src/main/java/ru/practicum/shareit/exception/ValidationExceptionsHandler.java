@@ -19,7 +19,7 @@ import java.util.Map;
 
 @RestControllerAdvice(assignableTypes = {UserController.class, UserValidation.class, UserServiceImpl.class,
         ItemController.class, ItemService.class, ItemValidation.class, BookingValidation.class, BookingController.class,
-BookingServise.class})
+        BookingServise.class})
 public class ValidationExceptionsHandler {
 
     @ExceptionHandler
@@ -52,12 +52,12 @@ public class ValidationExceptionsHandler {
     public Map<String, String> checkItemAvailable(final ItemAvailableException e) {
         return Map.of("error", e.getMessage());
     }
+
     @ExceptionHandler
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public Map<String, String> checkStatus(final StatusException e) {
         return Map.of("error", e.getMessage());
     }
-
 
 
 }
