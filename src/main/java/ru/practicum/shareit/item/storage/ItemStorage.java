@@ -22,9 +22,6 @@ public class ItemStorage {
     JpaCommentRepository jpaCommentRepository;
 
 
-
-
-
     public Item addItem(Item item) {
 
         return jpaItemRepository.save(item);
@@ -36,60 +33,45 @@ public class ItemStorage {
     }
 
 
-
-
-
-    public Item getItem(Integer id  ) {
+    public Item getItem(Integer id) {
         return jpaItemRepository.findItemById(id);
     }
 
-    public ItemDtoResponse getItemAndBooking(Integer id, Integer ownerId ) {
+    public ItemDtoResponse getItemAndBooking(Integer id, Integer ownerId) {
         LocalDateTime localDateTime = LocalDateTime.now();
 
         Item item = jpaItemRepository.findItemById(id);
 
         Booking nextBooking = jpaBooking.findFirstByItemIdAndStatusAndStartIsAfterOrStartEqualsOrderByStart(id
-                , Status.APPROVED , localDateTime, localDateTime);
+                , Status.APPROVED, localDateTime, localDateTime);
         Booking lastBooking = jpaBooking.findFirstByItemIdAndStatusAndStartIsBeforeOrStartEqualsOrderByEndDesc(id
-                , Status.APPROVED , localDateTime, localDateTime);
+                , Status.APPROVED, localDateTime, localDateTime);
 
         BookingConcise bookingConciseLast = null;
         BookingConcise bookingConciseNext = null;
 
 
-        if (item.getOwner() == ownerId){
-            if (nextBooking == null){
+        if (item.getOwner() == ownerId) {
+            if (nextBooking == null) {
                 bookingConciseNext = null;
             } else {
-                bookingConciseLast  = BookingConcise.builder().id(nextBooking.getId())
+                bookingConciseLast = BookingConcise.builder().id(nextBooking.getId())
                         .bookerId(nextBooking.getBooker().getId()).build();
             }
 
-            if (lastBooking == null){
+            if (lastBooking == null) {
                 bookingConciseLast = null;
             } else {
                 bookingConciseNext = BookingConcise.builder().id(lastBooking.getId())
                         .bookerId(lastBooking.getBooker().getId()).build();
             }
-            
-
-
-            /*try {
-                bookingConciseLast  = BookingConcise.builder().id(nextBooking.getId())
-                        .bookerId(nextBooking.getBooker().getId()).build();
-                bookingConciseNext = BookingConcise.builder().id(lastBooking.getId())
-                        .bookerId(lastBooking.getBooker().getId()).build();
-            } catch (NullPointerException nullPointerException){
-                bookingConciseLast = null;
-                bookingConciseNext = null;
-            }*/
 
 
         } else {
             bookingConciseLast = null;
             bookingConciseNext = null;
         }
-            List<CommentDto> commentDtoList = new ArrayList<>();
+        List<CommentDto> commentDtoList = new ArrayList<>();
         List<Comment> comments = jpaCommentRepository.findAllByItem_Id(item.getId());
         for (Comment comment : comments) {
             CommentDto commentDto = CommentDto.builder()
@@ -113,6 +95,7 @@ public class ItemStorage {
         return itemDtoResponse;
 
     }
+
     public List<ItemDtoResponse> getItemUser(Integer userId) {
         List<ItemDtoResponse> itemDtoResponses = new ArrayList<>();
         List<Item> itemList = jpaItemRepository.findAllByOwner(userId);
@@ -120,16 +103,16 @@ public class ItemStorage {
         for (Item item : itemList) {
             LocalDateTime localDateTime = LocalDateTime.now();
             Booking nextBooking = jpaBooking.findFirstByItemIdAndStatusAndStartIsAfterOrStartEqualsOrderByStart(item.getId()
-                    , Status.APPROVED , localDateTime, localDateTime);
+                    , Status.APPROVED, localDateTime, localDateTime);
             Booking lastBooking = jpaBooking.findFirstByItemIdAndStatusAndStartIsBeforeOrStartEqualsOrderByEndDesc(item.getId()
-                    , Status.APPROVED , localDateTime, localDateTime);
+                    , Status.APPROVED, localDateTime, localDateTime);
             BookingConcise bookingConciseLast;
             BookingConcise bookingConciseNext;
 
-            if (lastBooking != null || nextBooking != null){
+            if (lastBooking != null || nextBooking != null) {
 
 
-                bookingConciseLast  = BookingConcise.builder().id(nextBooking.getId())
+                bookingConciseLast = BookingConcise.builder().id(nextBooking.getId())
                         .bookerId(nextBooking.getBooker().getId()).build();
                 bookingConciseNext = BookingConcise.builder().id(lastBooking.getId())
                         .bookerId(lastBooking.getBooker().getId()).build();

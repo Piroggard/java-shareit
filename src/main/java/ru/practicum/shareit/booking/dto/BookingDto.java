@@ -2,7 +2,6 @@ package ru.practicum.shareit.booking.dto;
 
 import lombok.*;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 /**

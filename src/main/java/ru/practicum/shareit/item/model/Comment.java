@@ -24,13 +24,13 @@ public class Comment {
     private String text;
 
 
-    @ManyToOne (fetch = FetchType.EAGER)
-    @JoinColumn (name = "item_id" )
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "item_id")
     @Fetch(FetchMode.JOIN)
     private Item item;
 
-    @ManyToOne (fetch = FetchType.EAGER)
-    @JoinColumn (name = "author_id" , referencedColumnName = "id")
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "author_id", referencedColumnName = "id")
     @Fetch(FetchMode.JOIN)
     private User author;
 

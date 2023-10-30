@@ -5,7 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemDtoResponse;
-import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.CommentDto;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.service.ItemService;
@@ -39,7 +38,7 @@ public class ItemController {
     @GetMapping("{itemId}")
     public ItemDtoResponse getItem(@RequestHeader("X-Sharer-User-Id") Integer id, @PathVariable Integer itemId) {
         log.info("Метод - getItem, ");
-        return itemService.getItem(itemId , id);
+        return itemService.getItem(itemId, id);
     }
 
     @GetMapping
@@ -54,10 +53,10 @@ public class ItemController {
     }
 
     @PostMapping("{itemId}/comment")
-    public CommentDto addComment (@RequestHeader("X-Sharer-User-Id") Integer id ,
-                               @PathVariable Integer itemId,
-                               @Valid @RequestBody CommentDto commentDto){
-        log.info("addComment id {},itemId {}, text {}", id , itemId , commentDto.getText() );
+    public CommentDto addComment(@RequestHeader("X-Sharer-User-Id") Integer id,
+                                 @PathVariable Integer itemId,
+                                 @Valid @RequestBody CommentDto commentDto) {
+        log.info("addComment id {},itemId {}, text {}", id, itemId, commentDto.getText());
 
         return itemService.addComment(id, itemId, commentDto);
     }

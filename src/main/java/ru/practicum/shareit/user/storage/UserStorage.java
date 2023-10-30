@@ -1,6 +1,5 @@
 package ru.practicum.shareit.user.storage;
 
-import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 import ru.practicum.shareit.user.model.User;
 
@@ -9,10 +8,10 @@ import java.util.*;
 @Component
 public class UserStorage {
     JpaUserRepository jpaUserRepository;
+
     public UserStorage(JpaUserRepository jpaUserRepository) {
         this.jpaUserRepository = jpaUserRepository;
     }
-
 
 
     public User addUser(User user) {
@@ -20,6 +19,7 @@ public class UserStorage {
         int primaryKey = user.getId();
         return jpaUserRepository.getReferenceById(primaryKey);
     }
+
     public User getUser(Integer id) {
 
 
@@ -34,12 +34,12 @@ public class UserStorage {
         jpaUserRepository.deleteById(id);
     }
 
-    public User updateUser (User user ){
+    public User updateUser(User user) {
         jpaUserRepository.save(user);
         return getUser(user.getId());
     }
 
-    public User checkEmail (String email){
+    public User checkEmail(String email) {
         return jpaUserRepository.findUserByEmail(email);
     }
 

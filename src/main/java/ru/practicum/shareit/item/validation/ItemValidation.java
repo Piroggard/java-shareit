@@ -11,9 +11,7 @@ import ru.practicum.shareit.exception.ValidationData;
 import ru.practicum.shareit.exception.ValidationIdException;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemDtoResponse;
-import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.storage.ItemStorage;
-import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.storage.UserStorage;
 
 import java.time.LocalDateTime;
@@ -28,13 +26,13 @@ public class ItemValidation {
     BookingStorage bookingStorage;
     JpaBooking jpaBooking;
 
-   public void checkUserId(int id) {
+    public void checkUserId(int id) {
         boolean checkUser = false;
 
-            if (userStorage.getUser(id) != null) {
-                checkUser = true;
+        if (userStorage.getUser(id) != null) {
+            checkUser = true;
 
-            }
+        }
         if (!checkUser) {
             throw new ValidationIdException("Пользыватель с id = " + id + " не найден");
         }
@@ -53,13 +51,11 @@ public class ItemValidation {
     }
 
 
+    public void checkingDataNull(ItemDtoResponse item) {
 
-
-    public void checkingDataNull (ItemDtoResponse item){
-
-            if (item == null){
-                throw new ValidationIdException("Вещь не найдена ");
-            }
+        if (item == null) {
+            throw new ValidationIdException("Вещь не найдена ");
+        }
     }
 
     public void checkItem(ItemDto itemDto) {
@@ -83,32 +79,29 @@ public class ItemValidation {
         }
     }
 
-    public void checkComment (String text , Integer idItem){
-       if (text.isEmpty()){
-           throw new ValidationData("нет комента нигер");
-       }
+    public void checkComment(String text, Integer idItem) {
+        if (text.isEmpty()) {
+            throw new ValidationData("Нет коментария ");
+        }
         LocalDateTime localDateTime = LocalDateTime.now();
 
-       if (bookingStorage.getBookingById(idItem).getStart().isBefore(localDateTime)){
-           throw new ValidationData("Кривой статус ");
-       }
+        if (bookingStorage.getBookingById(idItem).getStart().isBefore(localDateTime)) {
+            throw new ValidationData("Неверный статус ");
+        }
     }
-    public void checkCommentBoocking (Integer userId , Integer itemId){
-       List <Booking> bookings  = jpaBooking.findAllByBooker_IdAndItem_Id(userId, itemId);
+
+    public void checkCommentBoocking(Integer userId, Integer itemId) {
+        List<Booking> bookings = jpaBooking.findAllByBooker_IdAndItem_Id(userId, itemId);
         System.out.println(bookings);
-        if (bookings.size() == 0 ){
-            throw new ValidationData("этот нигер не брал вещи в аренду");
+        if (bookings.size() == 0) {
+            throw new ValidationData("Пользователь" + userId + " не брал вишь в аренду ");
         }
         for (Booking booking : bookings) {
-            if (booking.getStatus() == Status.REJECTED){
-                throw new ValidationData("Этому нигеру отклонили бронь");
+            if (booking.getStatus() == Status.REJECTED) {
+                throw new ValidationData("Бронирование отклонено ");
             }
         }
 
 
     }
-
-
-
-
 }

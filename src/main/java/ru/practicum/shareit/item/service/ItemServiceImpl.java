@@ -1,10 +1,8 @@
 package ru.practicum.shareit.item.service;
 
 import lombok.AllArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import ru.practicum.shareit.booking.storage.JpaBooking;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemDtoResponse;
 import ru.practicum.shareit.item.model.Comment;
@@ -29,8 +27,6 @@ public class ItemServiceImpl implements ItemService {
     private final ItemValidation itemValidation;
     private JpaCommentRepository jpaCommentRepository;
     private UserStorage userStorage;
-
-
 
 
     @Override
@@ -65,7 +61,7 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public ItemDtoResponse getItem(Integer itemId, Integer id) {
         itemValidation.checItemId(itemId);
-        ItemDtoResponse itemList = itemStorage.getItemAndBooking(itemId , id);
+        ItemDtoResponse itemList = itemStorage.getItemAndBooking(itemId, id);
         itemValidation.checkingDataNull(itemList);
         return itemList;
     }
@@ -103,7 +99,7 @@ public class ItemServiceImpl implements ItemService {
                 .item(item)
                 .author(user)
                 .created(localDateTime).build();
-        Comment comment1 =  jpaCommentRepository.save(comment);
+        Comment comment1 = jpaCommentRepository.save(comment);
 
         CommentDto commentDto1 = CommentDto.builder()
                 .id(comment1.getId())

@@ -12,8 +12,6 @@ import lombok.*;
 @EqualsAndHashCode
 @Builder(toBuilder = true)
 public class ItemDto {
-
-
     private Integer id;
     private String name;
     private String description;
