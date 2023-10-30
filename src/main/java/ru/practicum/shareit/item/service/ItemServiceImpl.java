@@ -80,7 +80,8 @@ public class ItemServiceImpl implements ItemService {
         }
         String textToLower = text.toLowerCase();
         for (Item item : itemStorage.getItems()) {
-            if (item.getAvailable() && (item.getName().toLowerCase().contains(textToLower) || item.getDescription().toLowerCase().contains(textToLower))) {
+            if (item.getAvailable() && (item.getName().toLowerCase().contains(textToLower) ||
+                    item.getDescription().toLowerCase().contains(textToLower))) {
                 itemList.add(item);
             }
         }
