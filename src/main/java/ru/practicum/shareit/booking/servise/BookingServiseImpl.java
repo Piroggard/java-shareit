@@ -59,7 +59,7 @@ public class BookingServiseImpl implements BookingServise {
     @Override
     public Booking updateBooking(Integer bookingId, Integer userId, Boolean approved) throws ItemAvailableException {
         Booking booking = bookingStorage.getBookingById(bookingId);
-        bookingValidation.checkUpdateBooking( userId, approved, booking);
+        bookingValidation.checkUpdateBooking(userId, approved, booking);
         bookingValidation.checIdkBookerUpdate(approved, booking);
         if (approved) {
             booking.setStatus(Status.APPROVED);

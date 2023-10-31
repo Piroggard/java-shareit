@@ -22,7 +22,7 @@ public class UserValidation {
         validationEmaiAdd(user);
     }
 
-    public void validationEmailUpdate( Integer id, User user ) {
+    public void validationEmailUpdate(Integer id, User user) {
 
         if (user != null) {
             if (id == user.getId()) {
@@ -35,7 +35,7 @@ public class UserValidation {
     }
 
 
-    public void validationEmaiAdd( User userValid) {
+    public void validationEmaiAdd(User userValid) {
         if (userValid != null) {
             User user = new User();
             userStorage.addUser(user);
