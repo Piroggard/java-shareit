@@ -45,7 +45,7 @@ public class ItemStorage {
         Booking nextBooking = jpaBooking.findFirstByItemIdAndStatusAndStartIsAfterOrStartEqualsOrderByStart(id,
                 Status.APPROVED, localDateTime, localDateTime);
         Booking lastBooking = jpaBooking.findFirstByItemIdAndStatusAndStartIsBeforeOrStartEqualsOrderByEndDesc(id,
-                        Status.APPROVED, localDateTime, localDateTime);
+                Status.APPROVED, localDateTime, localDateTime);
 
         BookingConcise bookingConciseLast = null;
         BookingConcise bookingConciseNext = null;
@@ -112,8 +112,6 @@ public class ItemStorage {
             BookingConcise bookingConciseNext;
 
             if (lastBooking != null || nextBooking != null) {
-
-
                 bookingConciseLast = BookingConcise.builder().id(nextBooking.getId())
                         .bookerId(nextBooking.getBooker().getId()).build();
                 bookingConciseNext = BookingConcise.builder().id(lastBooking.getId())
@@ -131,16 +129,17 @@ public class ItemStorage {
                     .request(item.getRequest())
                     .nextBooking(bookingConciseLast)
                     .lastBooking(bookingConciseNext).build();
-
             itemDtoResponses.add(itemDtoResponse);
             nextBooking = null;
             lastBooking = null;
             bookingConciseNext = null;
             bookingConciseLast = null;
-
-
         }
         return itemDtoResponses;
+    }
+
+    public List<Item> findAllByNameOrDescription(String string) {
+        return jpaItemRepository.search(string);
     }
 
 }

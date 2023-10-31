@@ -24,40 +24,37 @@ public class ValidationExceptionsHandler {
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.CONFLICT)
-    public Map<String, String> validationData(final ValidationException e) {
+    public Map<String, String> handleValidationException(final ValidationException e) {
         return Map.of("error", e.getMessage());
     }
 
-
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public Map<String, String> dataNotFound(final ValidationData e) {
+    public Map<String, String> handleValidationDataException(final ValidationData e) {
         return Map.of("error", e.getMessage());
     }
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public Map<String, String> dataNotFound(final ValidationIdException e) {
+    public Map<String, String> handleValidationIdException(final ValidationIdException e) {
         return Map.of("error", e.getMessage());
     }
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public Map<String, String> dataNotFound(final MethodArgumentNotValidException e) {
-        return Map.of("error", "Неправильно указанна почта");
+    public Map<String, String> handleMethodArgumentNotValidException(final MethodArgumentNotValidException e) {
+        return Map.of("error", "Неправильно указана почта");
     }
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public Map<String, String> checkItemAvailable(final ItemAvailableException e) {
+    public Map<String, String> handleItemAvailableException(final ItemAvailableException e) {
         return Map.of("error", e.getMessage());
     }
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public Map<String, String> checkStatus(final StatusException e) {
+    public Map<String, String> handleStatusException(final StatusException e) {
         return Map.of("error", e.getMessage());
     }
-
-
 }

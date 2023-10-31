@@ -2,6 +2,7 @@ package ru.practicum.shareit.booking.storage;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.model.Status;
 
@@ -10,6 +11,17 @@ import java.util.List;
 
 public interface JpaBooking extends JpaRepository<Booking, Integer> {
     Booking getBookingByIdOrderByStart(Integer id);
+
+    @Query(value = "SELECT NEW Booking ( b.id, b.start , b.end, i," +
+            "    u, " +
+            "    b.status " +
+            ") " +
+            "FROM Booking b " +
+            "JOIN b.item i " +
+            "JOIN b.booker u " +
+            "WHERE b.id = :bookingId")
+    Booking findAllBookingsWithItemAndUserById(@Param("bookingId") Integer bookingId);
+
 
     List<Booking> findAllByBooker_IdOrderByStartDesc(Integer id);
 

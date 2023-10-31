@@ -6,36 +6,30 @@ import org.springframework.stereotype.Component;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.model.Status;
-import ru.practicum.shareit.booking.storage.BookingStorage;
 import ru.practicum.shareit.exception.ItemAvailableException;
 import ru.practicum.shareit.exception.ValidationData;
 import ru.practicum.shareit.exception.ValidationIdException;
 import ru.practicum.shareit.item.model.Item;
-import ru.practicum.shareit.item.storage.ItemStorage;
 import ru.practicum.shareit.user.model.User;
-import ru.practicum.shareit.user.storage.UserStorage;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Component
 @Slf4j
 @AllArgsConstructor
 public class BookingValidation {
-    BookingStorage bookingStorage;
-    ItemStorage itemStorage;
-    UserStorage userStorage;
 
-    public void checkItemAvailable(Integer idItem, BookingDto bookingDto) throws ItemAvailableException {
-        Item item = itemStorage.getItem(idItem);
+    public void checkItemAvailable(BookingDto bookingDto, Item item) {
         LocalDateTime localDate = LocalDateTime.now();
         if (item == null) {
-            throw new ValidationIdException("Вешь не найдена");
+            throw new ValidationIdException("Вещь не найдена");
         }
         if (bookingDto.getEnd() == null || bookingDto.getStart() == null) {
-            throw new ValidationData("Не заполнено время ");
+            throw new ValidationData("Не заполнено время");
         }
         if (bookingDto.getEnd().isBefore(bookingDto.getStart())) {
-            throw new ValidationData("Время начала бранирование позже конца");
+            throw new ValidationData("Время начала бронирования позже конца");
         }
 
         if (bookingDto.getEnd().isEqual(bookingDto.getStart()) && bookingDto.getStart().isAfter(localDate)) {
@@ -51,46 +45,43 @@ public class BookingValidation {
         }
     }
 
-    public void bookerValidation(Integer bookerId) {
-        User user = userStorage.getUser(bookerId);
+    public void bookerValidation(User user) {
+
         if (user == null) {
             throw new ValidationIdException("Пользователь не найден");
         }
     }
 
-    public void checkBookerOrOwer(Integer idBooking, Integer idUser) {
-        Booking booking = bookingStorage.getBookingById(idBooking);
-        if (booking.getBooker().getId() != idUser && booking.getItem().getOwner() != idUser) {
+    public void checkBookerOrOwer(List<Booking> bookingUser, List<Booking> booking) {
+        if (booking.isEmpty() && bookingUser.isEmpty()) {
             throw new ValidationIdException("Нет разрешения для просмотра");
         }
     }
 
-    public void checkBooking(Integer idBooking) {
-        if (bookingStorage.getBookingById(idBooking) == null) {
+    public void checkBooking(Booking booking) {
+        if (booking == null) {
             throw new ValidationIdException("Вещь не найдена");
         }
 
     }
 
-    public void checkBookerOrOwerUser(Integer id) {
-        User user = userStorage.getUser(id);
+    public void checkBookerOrOwerUser(User user) {
         if (user == null) {
             throw new ValidationIdException("Пользователь не найден");
         }
     }
 
-    public void checkUpdateBooking(Integer idBooking, Integer idUser, Boolean approved) throws ItemAvailableException {
+    public void checkUpdateBooking(Integer idUser, Boolean approved, Booking booking) throws ItemAvailableException {
         if (approved == null) {
             throw new ItemAvailableException("Нет данных для изменения");
         }
-        Booking booking = bookingStorage.getBookingById(idBooking);
+
         if (booking.getItem().getOwner() != idUser) {
             throw new ValidationIdException("Нет разрешения на изменение");
         }
     }
 
-    public void checIdkBookerUpdate(Integer bookingId, Boolean approved) {
-        Booking booking = bookingStorage.getBookingById(bookingId);
+    public void checIdkBookerUpdate(Boolean approved, Booking booking) {
         log.info("Получен статус" + booking.getStatus());
         if (approved && booking.getStatus() == Status.APPROVED) {
 
@@ -100,9 +91,8 @@ public class BookingValidation {
         }
     }
 
-    public void checOwner(Integer ownerId, Integer itemId) {
-        Item item = itemStorage.getItem(itemId);
-        if (item.getOwner() == ownerId) {
+    public void checOwner(Integer ownerId, Item itemChecOwner) {
+        if (itemChecOwner.getOwner() == ownerId) {
             throw new ValidationIdException("Ошибка бронирования ");
         }
     }

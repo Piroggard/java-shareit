@@ -20,7 +20,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User addUser(UserDto userDto) {
-        userValidation.validationUser(userDto, userDto.getId());
+        User userWithMail = userStorage.checkEmail(userDto.getEmail());
+        userValidation.validationUser(userDto, userWithMail);
         User user = User.builder().name(userDto.getName()).email(userDto.getEmail()).build();
         log.info("Входный данне DTO {}", user);
         return userStorage.addUser(user);
@@ -28,8 +29,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User updateUser(Integer id, UserDto userDto) {
-
-        userValidation.validationEmailUpdate(userDto, id);
+        User userWithMail = userStorage.checkEmail(userDto.getEmail());
+        userValidation.validationEmailUpdate(id, userWithMail);
         if (userDto.getEmail() == null)
             log.info("input Data {}", userDto);
         User userUpdate = userStorage.getUser(id);
@@ -42,7 +43,6 @@ public class UserServiceImpl implements UserService {
         log.info("updateUser {} ", userUpdate);
 
         return userStorage.updateUser(userUpdate);
-
     }
 
     @Override

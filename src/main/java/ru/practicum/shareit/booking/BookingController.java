@@ -7,8 +7,6 @@ import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.servise.BookingServise;
-import ru.practicum.shareit.exception.ItemAvailableException;
-import ru.practicum.shareit.exception.StatusException;
 
 import java.util.List;
 
@@ -23,7 +21,8 @@ public class BookingController {
     BookingServise bookingServise;
 
     @PostMapping
-    public Booking addBooking(@Validated @RequestHeader("X-Sharer-User-Id") Integer booker, @RequestBody BookingDto bookingDto) throws ItemAvailableException {
+    public Booking addBooking(@Validated @RequestHeader("X-Sharer-User-Id") Integer booker,
+                              @RequestBody BookingDto bookingDto) {
 
         log.info("Дата начала {} и дата конца {}", bookingDto.getStart(), bookingDto.getEnd());
         return bookingServise.addBooking(bookingDto, booker);
@@ -33,8 +32,7 @@ public class BookingController {
     @PatchMapping("{bookingId}")
     public Booking updateBooking(@RequestHeader("X-Sharer-User-Id") Integer id,
                                  @PathVariable Integer bookingId,
-                                 @RequestParam(name = "approved", required = false) Boolean approved) throws ItemAvailableException {
-        System.out.println(1);
+                                 @RequestParam(name = "approved", required = false) Boolean approved) {
         log.info("Заголовок {}, id бронирования {}, значение {}", id, bookingId, approved);
         return bookingServise.updateBooking(bookingId, id, approved);
     }
@@ -48,7 +46,7 @@ public class BookingController {
 
     @GetMapping
     public List<Booking> getAllBookingUser(@RequestHeader("X-Sharer-User-Id") Integer id,
-                                           @RequestParam(name = "state", required = false) String state) throws StatusException {
+                                           @RequestParam(name = "state", required = false) String state) {
         log.info("Вызов метода получения информации. Заголовок {}, Статус {}", id, state);
         if (state == null) {
             return bookingServise.getAllBookingUSers(id);
@@ -60,7 +58,7 @@ public class BookingController {
 
     @GetMapping("owner")
     public List<Booking> getBookingByOwner(@RequestHeader("X-Sharer-User-Id") Integer idOwner,
-                                           @RequestParam(name = "state", required = false) String state) throws StatusException {
+                                           @RequestParam(name = "state", required = false) String state) {
         log.info("Вызов метода получения информации об Owner. Заголовок {}, Статус {}", idOwner, state);
 
         return bookingServise.getBookingByOwner(state, idOwner);

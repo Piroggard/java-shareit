@@ -8,14 +8,14 @@ import java.time.LocalDateTime;
  * TODO Sprint add-bookings.
  */
 
-@Setter
+
 @Getter
 @ToString
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode
 @Builder(toBuilder = true)
-public class BookingDto {
+public final class BookingDto {
     private Integer itemId;
     @NonNull
     private LocalDateTime start;

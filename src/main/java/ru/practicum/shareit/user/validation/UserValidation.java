@@ -16,16 +16,16 @@ import ru.practicum.shareit.user.storage.UserStorage;
 public class UserValidation {
     UserStorage userStorage;
 
-    public void validationUser(UserDto user, Integer id) throws ValidationException {
-        log.info("user {}", user);
-        validationUserData(user);
+    public void validationUser(UserDto userDto, User user) throws ValidationException {
+        log.info("user {}", userDto);
+        validationUserData(userDto);
         validationEmaiAdd(user);
     }
 
-    public void validationEmailUpdate(UserDto userDto, Integer id) {
-        User userWithMail = userStorage.checkEmail(userDto.getEmail());
-        if (userWithMail != null) {
-            if (id == userWithMail.getId()) {
+    public void validationEmailUpdate( Integer id, User user ) {
+
+        if (user != null) {
+            if (id == user.getId()) {
                 return;
             }
             if (id != null) {
@@ -35,9 +35,8 @@ public class UserValidation {
     }
 
 
-    public void validationEmaiAdd(UserDto userDto) {
-        User userWithMail = userStorage.checkEmail(userDto.getEmail());
-        if (userWithMail != null) {
+    public void validationEmaiAdd( User userValid) {
+        if (userValid != null) {
             User user = new User();
             userStorage.addUser(user);
             System.out.println(1);

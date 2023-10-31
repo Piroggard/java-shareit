@@ -12,7 +12,10 @@ import ru.practicum.shareit.booking.validation.BookingValidation;
 import ru.practicum.shareit.exception.ItemAvailableException;
 import ru.practicum.shareit.exception.StatusException;
 import ru.practicum.shareit.item.model.Item;
+import ru.practicum.shareit.item.storage.ItemStorage;
 import ru.practicum.shareit.user.model.User;
+import ru.practicum.shareit.user.storage.UserStorage;
+import ru.practicum.shareit.user.validation.UserValidation;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -25,15 +28,23 @@ import java.util.List;
 public class BookingServiseImpl implements BookingServise {
     private final BookingStorage bookingStorage;
     private final BookingValidation bookingValidation;
-    JpaBooking jpaBooking;
+    private final JpaBooking jpaBooking;
+    private final ItemStorage itemStorage;
+    private final UserStorage userStorage;
+    private final UserValidation userValidation;
 
     @Override
-    public Booking addBooking(BookingDto bookingDto, Integer booker) throws ItemAvailableException {
+    public Booking addBooking(BookingDto bookingDto, Integer booker) {
         Item item = Item.builder().id(bookingDto.getItemId()).build();
         User user = User.builder().id(booker).build();
-        bookingValidation.checkItemAvailable(bookingDto.getItemId(), bookingDto);
-        bookingValidation.checOwner(booker, bookingDto.getItemId());
-        bookingValidation.bookerValidation(booker);
+        User userBooker = userStorage.getUser(booker);
+        Item itemOwner = itemStorage.getItem(bookingDto.getItemId());
+        Item itemValid = itemStorage.getItem(bookingDto.getItemId());
+        userValidation.checkingDataNull(userBooker);
+        bookingValidation.checkItemAvailable(bookingDto, itemValid);
+        bookingValidation.checOwner(booker, itemOwner);
+        bookingValidation.bookerValidation(user);
+
 
         Booking booking = Booking.builder()
                 .item(item)
@@ -47,9 +58,9 @@ public class BookingServiseImpl implements BookingServise {
 
     @Override
     public Booking updateBooking(Integer bookingId, Integer userId, Boolean approved) throws ItemAvailableException {
-        bookingValidation.checkUpdateBooking(bookingId, userId, approved);
-        bookingValidation.checIdkBookerUpdate(bookingId, approved);
         Booking booking = bookingStorage.getBookingById(bookingId);
+        bookingValidation.checkUpdateBooking( userId, approved, booking);
+        bookingValidation.checIdkBookerUpdate(approved, booking);
         if (approved) {
             booking.setStatus(Status.APPROVED);
         } else {
@@ -60,20 +71,24 @@ public class BookingServiseImpl implements BookingServise {
 
     @Override
     public Booking getBooking(Integer bookingId, Integer id) {
-        bookingValidation.checkBooking(bookingId);
-        bookingValidation.checkBookerOrOwer(bookingId, id);
+        Booking booking = bookingStorage.getBookingById(bookingId);
+        bookingValidation.checkBooking(booking);
+
+        bookingValidation.checkBookerOrOwer(bookingStorage.getAllBookingUsers(id),
+                bookingStorage.getBookingByOwner(id));
         return bookingStorage.getBookingById(bookingId);
     }
 
     @Override
     public List<Booking> getAllBookingUSers(Integer userId) {
-        bookingValidation.checkBookerOrOwerUser(userId);
+        User user = userStorage.getUser(userId);
+        bookingValidation.checkBookerOrOwerUser(user);
         return bookingStorage.getAllBookingUsers(userId);
     }
 
 
     @Override
-    public List<Booking> getBookingByState(String state, Integer id) throws StatusException {
+    public List<Booking> getBookingByState(String state, Integer id) {
         if (state.equals("ALL")) {
             return bookingStorage.getAllBookingUsers(id);
         }
@@ -123,7 +138,7 @@ public class BookingServiseImpl implements BookingServise {
 
     @Override
     public List<Booking> getBookingByOwner(String state, Integer idOwner) throws StatusException {
-        bookingValidation.checkBookerOrOwerUser(idOwner);
+        bookingValidation.checkBookerOrOwerUser(userStorage.getUser(idOwner));
         if (state == null) {
             return bookingStorage.getBookingByOwner(idOwner);
         }
@@ -155,11 +170,9 @@ public class BookingServiseImpl implements BookingServise {
 
             for (Booking booking : bookingList) {
                 if (booking.getEnd().isBefore(localDateTime)) {
-                    System.out.println(1);
                     list.add(booking);
                 }
             }
-            System.out.println(bookingList);
             return list;
         }
         return null;
