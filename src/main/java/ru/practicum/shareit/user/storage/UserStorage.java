@@ -7,7 +7,7 @@ import java.util.*;
 
 @Component
 public class UserStorage {
-    JpaUserRepository jpaUserRepository;
+    private final JpaUserRepository jpaUserRepository;
 
     public UserStorage(JpaUserRepository jpaUserRepository) {
         this.jpaUserRepository = jpaUserRepository;
@@ -44,3 +44,4 @@ public class UserStorage {
     }
 
 }
+

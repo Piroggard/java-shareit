@@ -5,7 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.model.Status;
-import ru.practicum.shareit.exception.ValidationData;
+import ru.practicum.shareit.exception.ValidationFailureException;
 import ru.practicum.shareit.exception.ValidationIdException;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemDtoResponse;
@@ -54,15 +54,15 @@ public class ItemValidation {
 
     public void checkItem(ItemDto itemDto) {
         if (itemDto.getAvailable() == null) {
-            throw new ValidationData("Получены не все данные ");
+            throw new ValidationFailureException("Получены не все данные ");
         }
 
         if (itemDto.getName().length() == 0) {
-            throw new ValidationData("Имя не может быть пустым");
+            throw new ValidationFailureException("Имя не может быть пустым");
         }
 
         if (itemDto.getDescription() == null) {
-            throw new ValidationData("Нет описание вещи ");
+            throw new ValidationFailureException("Нет описание вещи ");
         }
     }
 
@@ -75,23 +75,23 @@ public class ItemValidation {
 
     public void checkComment(String text, LocalDateTime start) {
         if (text.isEmpty()) {
-            throw new ValidationData("Нет комментария ");
+            throw new ValidationFailureException("Нет комментария ");
         }
         LocalDateTime localDateTime = LocalDateTime.now();
 
         if (start.isBefore(localDateTime)) {
-            throw new ValidationData("Неверный статус ");
+            throw new ValidationFailureException("Неверный статус ");
         }
     }
 
     public void checkCommentBoocking(Integer userId, List<Booking> bookings) {
 
         if (bookings.size() == 0) {
-            throw new ValidationData("Пользователь" + userId + " не брал вишь в аренду ");
+            throw new ValidationFailureException("Пользователь" + userId + " не брал вишь в аренду ");
         }
         for (Booking booking : bookings) {
             if (booking.getStatus() == Status.REJECTED) {
-                throw new ValidationData("Бронирование отклонено ");
+                throw new ValidationFailureException("Бронирование отклонено ");
             }
         }
 

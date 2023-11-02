@@ -1,6 +1,10 @@
 package ru.practicum.shareit.booking.model;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 
 @Setter
 @Getter
@@ -8,6 +12,6 @@ import lombok.*;
 @EqualsAndHashCode
 @Builder(toBuilder = true)
 public class BookingConcise {
-    Integer id;
-    Integer bookerId;
+    private Integer id;
+    private Integer bookerId;
 }

@@ -1,6 +1,11 @@
 package ru.practicum.shareit.booking.dto;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.NonNull;
 
 import java.time.LocalDateTime;
 
@@ -10,7 +15,6 @@ import java.time.LocalDateTime;
 
 
 @Getter
-@ToString
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode

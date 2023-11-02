@@ -9,7 +9,6 @@ import ru.practicum.shareit.booking.model.Status;
 import ru.practicum.shareit.booking.storage.BookingStorage;
 import ru.practicum.shareit.booking.storage.JpaBooking;
 import ru.practicum.shareit.booking.validation.BookingValidation;
-import ru.practicum.shareit.exception.ItemAvailableException;
 import ru.practicum.shareit.exception.StatusException;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.storage.ItemStorage;
@@ -57,7 +56,7 @@ public class BookingServiseImpl implements BookingServise {
     }
 
     @Override
-    public Booking updateBooking(Integer bookingId, Integer userId, Boolean approved) throws ItemAvailableException {
+    public Booking updateBooking(Integer bookingId, Integer userId, Boolean approved) {
         Booking booking = bookingStorage.getBookingById(bookingId);
         bookingValidation.checkUpdateBooking(userId, approved, booking);
         bookingValidation.checIdkBookerUpdate(approved, booking);
@@ -80,7 +79,7 @@ public class BookingServiseImpl implements BookingServise {
     }
 
     @Override
-    public List<Booking> getAllBookingUSers(Integer userId) {
+    public List<Booking> getAllBookingUsers(Integer userId) {
         User user = userStorage.getUser(userId);
         bookingValidation.checkBookerOrOwerUser(user);
         return bookingStorage.getAllBookingUsers(userId);
@@ -137,7 +136,7 @@ public class BookingServiseImpl implements BookingServise {
     }
 
     @Override
-    public List<Booking> getBookingByOwner(String state, Integer idOwner) throws StatusException {
+    public List<Booking> getBookingByOwner(String state, Integer idOwner) {
         bookingValidation.checkBookerOrOwerUser(userStorage.getUser(idOwner));
         if (state == null) {
             return bookingStorage.getBookingByOwner(idOwner);

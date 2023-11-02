@@ -3,7 +3,7 @@ package ru.practicum.shareit.user.validation;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
-import ru.practicum.shareit.exception.ValidationData;
+import ru.practicum.shareit.exception.ValidationFailureException;
 import ru.practicum.shareit.exception.ValidationException;
 import ru.practicum.shareit.exception.ValidationIdException;
 import ru.practicum.shareit.user.dto.UserDto;
@@ -14,9 +14,9 @@ import ru.practicum.shareit.user.storage.UserStorage;
 @Slf4j
 @Component
 public class UserValidation {
-    UserStorage userStorage;
+    private final UserStorage userStorage;
 
-    public void validationUser(UserDto userDto, User user) throws ValidationException {
+    public void validationUser(UserDto userDto, User user) {
         log.info("user {}", userDto);
         validationUserData(userDto);
         validationEmaiAdd(user);
@@ -39,7 +39,6 @@ public class UserValidation {
         if (userValid != null) {
             User user = new User();
             userStorage.addUser(user);
-            System.out.println(1);
             userStorage.removeUser(user.getId());
             throw new ValidationException("Такая почта уже существует");
         }
@@ -48,7 +47,7 @@ public class UserValidation {
 
     public void validationUserData(UserDto user) {
         if (user.getEmail() == null || user.getName() == null) {
-            throw new ValidationData("Получены не все данные ");
+            throw new ValidationFailureException("Получены не все данные ");
         }
     }
 
@@ -59,3 +58,4 @@ public class UserValidation {
     }
 
 }
+

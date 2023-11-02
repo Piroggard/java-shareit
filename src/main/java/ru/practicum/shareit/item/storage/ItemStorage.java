@@ -21,15 +21,9 @@ public class ItemStorage {
     JpaBooking jpaBooking;
     JpaCommentRepository jpaCommentRepository;
 
-
     public Item addItem(Item item) {
 
         return jpaItemRepository.save(item);
-    }
-
-    public List<Item> getItems() {
-
-        return jpaItemRepository.findAll();
     }
 
 
@@ -50,7 +44,6 @@ public class ItemStorage {
         BookingConcise bookingConciseLast = null;
         BookingConcise bookingConciseNext = null;
 
-
         if (item.getOwner() == ownerId) {
             if (nextBooking == null) {
                 bookingConciseNext = null;
@@ -58,15 +51,12 @@ public class ItemStorage {
                 bookingConciseLast = BookingConcise.builder().id(nextBooking.getId())
                         .bookerId(nextBooking.getBooker().getId()).build();
             }
-
             if (lastBooking == null) {
                 bookingConciseLast = null;
             } else {
                 bookingConciseNext = BookingConcise.builder().id(lastBooking.getId())
                         .bookerId(lastBooking.getBooker().getId()).build();
             }
-
-
         } else {
             bookingConciseLast = null;
             bookingConciseNext = null;
@@ -82,7 +72,6 @@ public class ItemStorage {
                     .created(comment.getCreated()).build();
             commentDtoList.add(commentDto);
         }
-
         ItemDtoResponse itemDtoResponse = ItemDtoResponse.builder().id(item.getId())
                 .name(item.getName())
                 .description(item.getDescription())
@@ -93,21 +82,59 @@ public class ItemStorage {
                 .comments(commentDtoList)
                 .lastBooking(bookingConciseNext).build();
         return itemDtoResponse;
-
     }
 
     public List<ItemDtoResponse> getItemUser(Integer userId) {
         List<ItemDtoResponse> itemDtoResponses = new ArrayList<>();
         List<Item> itemList = jpaItemRepository.findAllByOwner(userId);
-
+        List<Booking> allbookings = jpaBooking.findAll();
         for (Item item : itemList) {
-            LocalDateTime localDateTime = LocalDateTime.now();
-            Booking nextBooking = jpaBooking
-                    .findFirstByItemIdAndStatusAndStartIsAfterOrStartEqualsOrderByStart(item.getId(),
-                            Status.APPROVED, localDateTime, localDateTime);
-            Booking lastBooking = jpaBooking
-                    .findFirstByItemIdAndStatusAndStartIsBeforeOrStartEqualsOrderByEndDesc(item.getId(),
-                            Status.APPROVED, localDateTime, localDateTime);
+            LocalDateTime currentDateTime = LocalDateTime.now();
+            List<Booking> bookingListByItemId = new ArrayList<>();
+            List<LocalDateTime> dateTimesStart = new ArrayList<>();
+            List<LocalDateTime> dateTimesEnd = new ArrayList<>();
+
+            for (Booking booking : allbookings) {
+                if (Objects.equals(booking.getItem().getId(), item.getId()) && Status.APPROVED == booking.getStatus()) {
+                    bookingListByItemId.add(booking);
+                    dateTimesStart.add(booking.getStart());
+                    dateTimesEnd.add(booking.getEnd());
+                }
+            }
+
+            Booking nextBooking = null;
+            Booking lastBooking = null;
+            LocalDateTime closestPastDateTime = null;
+            LocalDateTime firstPastDateTime = null;
+
+            for (LocalDateTime dateTime : dateTimesStart) {
+                if (dateTime.isBefore(currentDateTime)) {
+                    if (closestPastDateTime == null || dateTime.isAfter(closestPastDateTime)) {
+                        closestPastDateTime = dateTime;
+                    }
+                }
+            }
+
+            for (LocalDateTime dateTime : dateTimesEnd) {
+                if (dateTime.isAfter(currentDateTime)) {
+                    if (firstPastDateTime == null || dateTime.isBefore(firstPastDateTime)) {
+                        firstPastDateTime = dateTime;
+                    }
+                }
+            }
+
+
+            for (Booking booking : bookingListByItemId) {
+                if (booking.getStart().equals(closestPastDateTime)) {
+                    lastBooking = booking;
+                }
+            }
+
+            for (Booking booking : bookingListByItemId) {
+                if (booking.getEnd().equals(firstPastDateTime)) {
+                    nextBooking = booking;
+                }
+            }
             BookingConcise bookingConciseLast;
             BookingConcise bookingConciseNext;
 

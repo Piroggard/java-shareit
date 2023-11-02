@@ -13,7 +13,7 @@ import java.util.List;
 @Slf4j
 @AllArgsConstructor
 public class BookingStorage {
-    private JpaBooking jpaBooking;
+    private final JpaBooking jpaBooking;
 
     public Booking addBooking(Booking booking) {
         jpaBooking.save(booking);

@@ -49,7 +49,7 @@ public class BookingController {
                                            @RequestParam(name = "state", required = false) String state) {
         log.info("Вызов метода получения информации. Заголовок {}, Статус {}", id, state);
         if (state == null) {
-            return bookingServise.getAllBookingUSers(id);
+            return bookingServise.getAllBookingUsers(id);
         } else {
             return bookingServise.getBookingByState(state, id);
         }

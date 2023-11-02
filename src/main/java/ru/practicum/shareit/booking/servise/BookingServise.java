@@ -2,21 +2,19 @@ package ru.practicum.shareit.booking.servise;
 
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.model.Booking;
-import ru.practicum.shareit.exception.ItemAvailableException;
-import ru.practicum.shareit.exception.StatusException;
 
 import java.util.List;
 
 public interface BookingServise {
-    Booking addBooking(BookingDto bookingDto, Integer booker) throws ItemAvailableException;
+    Booking addBooking(BookingDto bookingDto, Integer booker);
 
-    Booking updateBooking(Integer bookingId, Integer userId, Boolean approved) throws ItemAvailableException;
+    Booking updateBooking(Integer bookingId, Integer userId, Boolean approved);
 
     Booking getBooking(Integer bookingId, Integer id);
 
-    List<Booking> getAllBookingUSers(Integer userId);
+    List<Booking> getAllBookingUsers(Integer userId);
 
-    List<Booking> getBookingByState(String state, Integer id) throws StatusException;
+    List<Booking> getBookingByState(String state, Integer id);
 
-    List<Booking> getBookingByOwner(String state, Integer idOwner) throws StatusException;
+    List<Booking> getBookingByOwner(String state, Integer idOwner);
 }

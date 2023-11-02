@@ -1,6 +1,10 @@
 package ru.practicum.shareit.item.dto;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import ru.practicum.shareit.booking.model.BookingConcise;
 
 import ru.practicum.shareit.item.model.CommentDto;
@@ -8,13 +12,13 @@ import ru.practicum.shareit.item.model.CommentDto;
 
 import java.util.List;
 
-@Setter
+
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode
 @Builder(toBuilder = true)
-public class ItemDtoResponse {
+public final class ItemDtoResponse {
     private Integer id;
     private String name;
     private String description;
@@ -25,7 +29,6 @@ public class ItemDtoResponse {
     private BookingConcise nextBooking;
     private List<CommentDto> comments;
 }
-
 
 
 

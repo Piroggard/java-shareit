@@ -101,13 +101,11 @@ public class ItemServiceImpl implements ItemService {
         LocalDateTime localDateTime = LocalDateTime.now();
         Item item = itemStorage.getItem(itemId);
         User user = userStorage.getUser(idUser);
-
         Comment comment = Comment.builder()
                 .text(commentDto.getText())
                 .item(item)
                 .author(user)
                 .created(localDateTime).build();
-        Comment comment1 = jpaCommentRepository.save(comment);
-        return mappingComment.mappingCommentInCommentDto(comment1);
+        return mappingComment.mappingCommentInCommentDto(jpaCommentRepository.save(comment));
     }
 }

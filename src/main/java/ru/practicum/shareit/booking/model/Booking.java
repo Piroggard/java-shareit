@@ -1,6 +1,9 @@
 package ru.practicum.shareit.booking.model;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 import ru.practicum.shareit.item.model.Item;
@@ -16,7 +19,6 @@ import java.time.LocalDateTime;
 @Builder(toBuilder = true)
 @Entity
 @AllArgsConstructor
-@ToString
 @NoArgsConstructor
 @Table(name = "booking")
 public class Booking implements Comparable<Booking> {
