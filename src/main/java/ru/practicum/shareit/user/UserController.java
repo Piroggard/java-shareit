@@ -2,7 +2,6 @@ package ru.practicum.shareit.user;
 
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.shareit.exception.ValidationException;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.service.UserService;
@@ -17,10 +16,10 @@ import java.util.List;
 @AllArgsConstructor
 @RequestMapping(path = "/users")
 public class UserController {
-    UserService userService;
+    private final UserService userService;
 
     @PostMapping
-    public User addUser(@RequestBody @Valid UserDto userDto) throws ValidationException {
+    public User addUser(@RequestBody @Valid UserDto userDto) {
         return userService.addUser(userDto);
     }
 

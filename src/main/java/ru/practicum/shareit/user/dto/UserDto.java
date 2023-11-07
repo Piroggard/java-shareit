@@ -1,17 +1,20 @@
 package ru.practicum.shareit.user.dto;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import org.springframework.validation.annotation.Validated;
 
 import javax.validation.constraints.Email;
 
-@Setter
+
 @Getter
 @AllArgsConstructor
 @EqualsAndHashCode
 @Builder(toBuilder = true)
 @Validated
-public class UserDto {
+public final class UserDto {
     private int id;
     private String name;
     @Email(message = "Неправильно указанна почта")

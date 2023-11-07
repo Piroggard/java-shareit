@@ -1,4 +1,4 @@
-package ru.practicum.shareit.item.dto;
+package ru.practicum.shareit.booking.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -6,19 +6,12 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 
-/**
- * TODO Sprint add-controllers.
- */
-
 @Setter
 @Getter
 @AllArgsConstructor
 @EqualsAndHashCode
 @Builder(toBuilder = true)
-public final class ItemDto {
+public class BookingConcise {
     private Integer id;
-    private String name;
-    private String description;
-    private Boolean available;
-    private int owner;
+    private Integer bookerId;
 }
