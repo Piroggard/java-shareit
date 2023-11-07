@@ -29,6 +29,7 @@ public class Booking implements Comparable<Booking> {
     private LocalDateTime start;
     @Column(name = "end_of_booking")
     private LocalDateTime end;
+
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "item_id")
     @Fetch(FetchMode.JOIN)

@@ -4,6 +4,19 @@ CREATE TABLE IF NOT EXISTS users (
     email VARCHAR(255)
 );
 
+
+CREATE TABLE IF NOT EXISTS requests
+(
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    description VARCHAR(255),
+    requester_id INT,
+    created TIMESTAMP,
+    CONSTRAINT requests_booking_fr_user FOREIGN KEY (requester_id) REFERENCES users(id)
+);
+
+
+
+
 CREATE TABLE IF NOT EXISTS items (
     id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(255) NOT NULL,

@@ -12,6 +12,7 @@ import java.util.List;
 public interface JpaBooking extends JpaRepository<Booking, Integer> {
     Booking getBookingByIdOrderByStart(Integer id);
 
+
     @Query(value = "SELECT NEW Booking ( b.id, b.start , b.end, i," +
             "    u, " +
             "    b.status " +
@@ -21,7 +22,6 @@ public interface JpaBooking extends JpaRepository<Booking, Integer> {
             "JOIN b.booker u " +
             "WHERE b.id = :bookingId")
     Booking findAllBookingsWithItemAndUserById(@Param("bookingId") Integer bookingId);
-
 
     List<Booking> findAllByBooker_IdOrderByStartDesc(Integer id);
 
