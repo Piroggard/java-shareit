@@ -23,6 +23,7 @@ public class UserController {
         return userService.addUser(userDto);
     }
 
+
     @PatchMapping("{id}")
     public User updateUser(@PathVariable @Valid Integer id, @RequestBody UserDto userDto) {
         return userService.updateUser(id, userDto);
