@@ -12,7 +12,8 @@ public interface JpaItemRepository extends JpaRepository<Item, Integer> {
 
     List<Item> findAllByOwner(Integer id);
 
-
+    List<Item>findAllByRequest (Integer id);
+    List<Item> findItemsByRequest(long requestId);
 
     @Query(" select i from Item i " +
             "where upper(i.name) like upper(concat('%', ?1, '%')) " +

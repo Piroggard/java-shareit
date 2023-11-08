@@ -8,6 +8,8 @@ import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.servise.BookingServise;
 
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 import java.util.List;
 
 /**
@@ -46,22 +48,26 @@ public class BookingController {
 
     @GetMapping
     public List<Booking> getAllBookingUser(@RequestHeader("X-Sharer-User-Id") Integer id,
-                                           @RequestParam(name = "state", required = false) String state) {
+                                           @RequestParam(name = "state", required = false) String state,
+                                           @RequestParam(defaultValue = "0") @Min(0) Integer from,
+                                           @RequestParam(defaultValue = "20") @Min(1) @Max(100) Integer size) {
         log.info("Вызов метода получения информации. Заголовок {}, Статус {}", id, state);
         if (state == null) {
-            return bookingServise.getAllBookingUsers(id);
+            return bookingServise.getAllBookingUsers(id, from, size);
         } else {
-            return bookingServise.getBookingByState(state, id);
+            return bookingServise.getBookingByState(state, id, from, size);
         }
 
     }
 
     @GetMapping("owner")
     public List<Booking> getBookingByOwner(@RequestHeader("X-Sharer-User-Id") Integer idOwner,
-                                           @RequestParam(name = "state", required = false) String state) {
+                                           @RequestParam(name = "state", required = false) String state,
+                                           @RequestParam(defaultValue = "0") @Min(0) Integer from,
+                                           @RequestParam(defaultValue = "20") @Min(1) @Max(100) Integer size) {
         log.info("Вызов метода получения информации об Owner. Заголовок {}, Статус {}", idOwner, state);
 
-        return bookingServise.getBookingByOwner(state, idOwner);
+        return bookingServise.getBookingByOwner(state, idOwner, from, size);
     }
 
 

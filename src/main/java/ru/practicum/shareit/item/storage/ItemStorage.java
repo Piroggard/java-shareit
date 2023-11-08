@@ -23,6 +23,7 @@ public class ItemStorage {
 
     public Item addItem(Item item) {
 
+
         return jpaItemRepository.save(item);
     }
 
@@ -77,7 +78,6 @@ public class ItemStorage {
                 .description(item.getDescription())
                 .available(item.getAvailable())
                 .owner(item.getOwner())
-                .request(item.getRequest())
                 .nextBooking(bookingConciseLast)
                 .comments(commentDtoList)
                 .lastBooking(bookingConciseNext).build();
@@ -153,7 +153,6 @@ public class ItemStorage {
                     .description(item.getDescription())
                     .available(item.getAvailable())
                     .owner(item.getOwner())
-                    .request(item.getRequest())
                     .nextBooking(bookingConciseLast)
                     .lastBooking(bookingConciseNext).build();
             itemDtoResponses.add(itemDtoResponse);

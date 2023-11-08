@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemDtoResponse;
+import ru.practicum.shareit.item.dto.ResponseItem;
 import ru.practicum.shareit.item.model.CommentDto;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.service.ItemService;
@@ -23,7 +24,7 @@ public class ItemController {
     ItemService itemService;
 
     @PostMapping
-    public Item addItem(@RequestHeader("X-Sharer-User-Id") Integer id, @RequestBody ItemDto itemDto) {
+    public ItemDtoResponse addItem(@RequestHeader("X-Sharer-User-Id") Integer id, @RequestBody ItemDto itemDto) {
         log.info("@Post - id {} , itemDto {}", id, itemDto);
         return itemService.addItem(id, itemDto);
     }

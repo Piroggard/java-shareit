@@ -11,6 +11,9 @@ import ru.practicum.shareit.booking.validation.BookingValidation;
 import ru.practicum.shareit.item.ItemController;
 import ru.practicum.shareit.item.service.ItemService;
 import ru.practicum.shareit.item.validation.ItemValidation;
+import ru.practicum.shareit.request.ItemRequestController;
+import ru.practicum.shareit.request.servise.ItemRequestService;
+import ru.practicum.shareit.request.validation.ItemResponseValidation;
 import ru.practicum.shareit.user.UserController;
 import ru.practicum.shareit.user.service.UserServiceImpl;
 import ru.practicum.shareit.user.validation.UserValidation;
@@ -19,7 +22,7 @@ import java.util.Map;
 
 @RestControllerAdvice(assignableTypes = {UserController.class, UserValidation.class, UserServiceImpl.class,
         ItemController.class, ItemService.class, ItemValidation.class, BookingValidation.class, BookingController.class,
-        BookingServise.class})
+        BookingServise.class, ItemResponseValidation.class, ItemRequestController.class, ItemRequestService.class})
 public class ValidationExceptionsHandler {
 
     @ExceptionHandler

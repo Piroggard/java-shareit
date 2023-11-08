@@ -2,6 +2,8 @@ package ru.practicum.shareit.booking.servise;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.model.Booking;
@@ -16,6 +18,7 @@ import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.storage.UserStorage;
 import ru.practicum.shareit.user.validation.UserValidation;
 
+import javax.validation.ValidationException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -73,23 +76,39 @@ public class BookingServiseImpl implements BookingServise {
         Booking booking = bookingStorage.getBookingById(bookingId);
         bookingValidation.checkBooking(booking);
 
-        bookingValidation.checkBookerOrOwer(bookingStorage.getAllBookingUsers(id),
-                bookingStorage.getBookingByOwner(id));
+        bookingValidation.checkBookerOrOwer(bookingStorage.getAllBookingUsers(id, Pageable.unpaged()),
+                bookingStorage.getBookingByOwner(id,  Pageable.unpaged()));
         return bookingStorage.getBookingById(bookingId);
     }
 
     @Override
-    public List<Booking> getAllBookingUsers(Integer userId) {
+    public List<Booking> getAllBookingUsers(Integer userId, Integer from, Integer size) {
+        if (from < 0) {
+            throw new ValidationException("Отрицательное значение фром");
+        }
+        int offset = from > 0 ? from / size : 0;
+        PageRequest page = PageRequest.of(offset, size);
+
+
         User user = userStorage.getUser(userId);
         bookingValidation.checkBookerOrOwerUser(user);
-        return bookingStorage.getAllBookingUsers(userId);
+        return bookingStorage.getAllBookingUsers(userId, page);
     }
 
 
     @Override
-    public List<Booking> getBookingByState(String state, Integer id) {
+    public List<Booking> getBookingByState(String state, Integer id, Integer from, Integer size) {
+
+        if (from < 0) {
+            throw new ValidationException("Отрицательное значение фром");
+        }
+        int offset = from > 0 ? from / size : 0;
+        PageRequest page = PageRequest.of(offset, size);
+
+
+
         if (state.equals("ALL")) {
-            return bookingStorage.getAllBookingUsers(id);
+            return bookingStorage.getAllBookingUsers(id , page);
         }
         if (state.equals("FUTURE")) {
             return bookingStorage.findBookingsWithFutureStartTime(id);
@@ -106,7 +125,7 @@ public class BookingServiseImpl implements BookingServise {
         }
 
         if (state.equals("CURRENT")) {
-            List<Booking> bookingList = bookingStorage.getAllBookingUsers(id);
+            List<Booking> bookingList = bookingStorage.getAllBookingUsers(id, page);
             List<Booking> list = new ArrayList<>();
             LocalDateTime localDateTime = LocalDateTime.now();
 
@@ -120,7 +139,7 @@ public class BookingServiseImpl implements BookingServise {
         }
 
         if (state.equals("PAST")) {
-            List<Booking> bookingList = bookingStorage.getAllBookingUsers(id);
+            List<Booking> bookingList = bookingStorage.getAllBookingUsers(id, page);
             List<Booking> list = new ArrayList<>();
             LocalDateTime localDateTime = LocalDateTime.now();
 
@@ -136,13 +155,21 @@ public class BookingServiseImpl implements BookingServise {
     }
 
     @Override
-    public List<Booking> getBookingByOwner(String state, Integer idOwner) {
+    public List<Booking> getBookingByOwner(String state, Integer idOwner, Integer from, Integer size) {
         bookingValidation.checkBookerOrOwerUser(userStorage.getUser(idOwner));
+
+        if (from < 0) {
+            throw new ValidationException("Отрицательное значение фром");
+        }
+        int offset = from > 0 ? from / size : 0;
+        PageRequest page = PageRequest.of(offset, size);
+
+
         if (state == null) {
-            return bookingStorage.getBookingByOwner(idOwner);
+            return bookingStorage.getBookingByOwner(idOwner, page);
         }
         if (state.equals("ALL")) {
-            return bookingStorage.getBookingByOwner(idOwner);
+            return bookingStorage.getBookingByOwner(idOwner, page);
         }
         if (state.equals("FUTURE")) {
             return jpaBooking.findBooking(idOwner);
@@ -163,7 +190,7 @@ public class BookingServiseImpl implements BookingServise {
         }
 
         if (state.equals("PAST")) {
-            List<Booking> bookingList = bookingStorage.getBookingByOwner(idOwner);
+            List<Booking> bookingList = bookingStorage.getBookingByOwner(idOwner, page);
             List<Booking> list = new ArrayList<>();
             LocalDateTime localDateTime = LocalDateTime.now();
 

@@ -1,5 +1,6 @@
 package ru.practicum.shareit.booking.storage;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -23,7 +24,7 @@ public interface JpaBooking extends JpaRepository<Booking, Integer> {
             "WHERE b.id = :bookingId")
     Booking findAllBookingsWithItemAndUserById(@Param("bookingId") Integer bookingId);
 
-    List<Booking> findAllByBooker_IdOrderByStartDesc(Integer id);
+    List<Booking> findAllByBooker_IdOrderByStartDesc(Integer id, Pageable pageable);
 
     @Query(value = "SELECT b FROM Booking b WHERE b.start > CURRENT_TIMESTAMP ORDER BY b.start desc ")
     List<Booking> findBookingsWithFutureStartTime(Integer id);
@@ -34,7 +35,7 @@ public interface JpaBooking extends JpaRepository<Booking, Integer> {
 
     List<Booking> findAllByBooker_IdAndStatus(Integer id, Status status);
 
-    List<Booking> findBookingByItem_OwnerOrderByStartDesc(Integer idOwner);
+    List<Booking> findBookingByItem_OwnerOrderByStartDesc(Integer idOwner, Pageable pageable);
 
     @Query(value = "SELECT b FROM Booking b WHERE b.start > CURRENT_TIMESTAMP ORDER BY b.start desc ")
     List<Booking> findBooking(Integer id);

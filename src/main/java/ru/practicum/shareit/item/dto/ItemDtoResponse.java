@@ -24,10 +24,11 @@ public final class ItemDtoResponse {
     private String description;
     private Boolean available;
     private int owner;
-    private String request;
     private BookingConcise lastBooking;
     private BookingConcise nextBooking;
     private List<CommentDto> comments;
+    private Integer requestId;
+
 }
 
 

@@ -1,24 +1,16 @@
 package ru.practicum.shareit.request.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 import ru.practicum.shareit.user.model.User;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+
+import javax.persistence.*;
+
 import java.time.LocalDateTime;
 
 @Data
@@ -30,22 +22,21 @@ import java.time.LocalDateTime;
 public class ItemRequest {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private int id;
     @Column(name = "description")
     private String description;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "requester_id")
+    @JoinColumn(name = "requester_id", referencedColumnName = "id")
     @Fetch(FetchMode.JOIN)
-    @JsonIgnore
     private User requester;
 
     @Column(name = "created")
-    private LocalDateTime end;
+    private LocalDateTime created;
 
-    public ItemRequest(String description, User requester, LocalDateTime end) {
+    public ItemRequest(String description, User requester, LocalDateTime created) {
         this.description = description;
         this.requester = requester;
-        this.end = end;
+        this.created = created;
     }
 }

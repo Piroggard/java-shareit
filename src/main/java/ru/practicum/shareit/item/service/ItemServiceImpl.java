@@ -8,12 +8,15 @@ import ru.practicum.shareit.booking.storage.BookingStorage;
 import ru.practicum.shareit.booking.storage.JpaBooking;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemDtoResponse;
+import ru.practicum.shareit.item.dto.ResponseItem;
 import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.CommentDto;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.storage.ItemStorage;
 import ru.practicum.shareit.item.storage.JpaCommentRepository;
 import ru.practicum.shareit.item.validation.ItemValidation;
+import ru.practicum.shareit.request.model.ItemRequest;
+import ru.practicum.shareit.request.storage.JpaItemRequest;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.storage.UserStorage;
 
@@ -33,17 +36,36 @@ public class ItemServiceImpl implements ItemService {
     private BookingStorage bookingStorage;
     private JpaBooking jpaBooking;
     private MappingComment mappingComment;
+    private JpaItemRequest jpaItemRequest;
 
 
     @Override
-    public Item addItem(Integer id, ItemDto itemDto) {
+    public ItemDtoResponse addItem(Integer id, ItemDto itemDto) {
         User user = userStorage.getUser(id);
         itemValidation.checkItem(itemDto);
         itemValidation.checkUserId(user);
+        //ItemRequest itemRequest = jpaItemRequest.findAllById(itemDto.getRequestId());
         log.info("id {} , itemDto {}", id, itemDto);
         Item item = Item.builder().name(itemDto.getName()).description(itemDto.getDescription())
-                .owner(id).available(itemDto.getAvailable()).build();
-        return itemStorage.addItem(item);
+                .owner(id).available(itemDto.getAvailable()).request(itemDto.getRequestId()).build();
+                itemStorage.addItem(item);
+        ItemDtoResponse itemDtoResponse = ItemDtoResponse.builder()
+                .id(item.getId())
+                .name(item.getName())
+                .description(item.getDescription())
+                .available(item.getAvailable())
+                .owner(item.getOwner())
+                .requestId(item.getRequest()).build();
+
+                /*ResponseItem responseItem = ResponseItem.builder()
+                        .id(item.getId())
+                        .name(item.getName())
+                        .description(item.getDescription())
+                        .owner(item.getOwner())
+                        .available(item.getAvailable())
+                        .request(itemRequest.getRequester()).build();*/
+
+                return itemDtoResponse;
     }
 
     @Override

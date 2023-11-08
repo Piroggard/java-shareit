@@ -35,6 +35,7 @@ public class Item {
     private Boolean available;
     @Column(name = "owner")
     private int owner;
-    @Column(name = "request")
-    private String request;
+    @Column(name = "request_id")
+    private Integer request;
+
 }

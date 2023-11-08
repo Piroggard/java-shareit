@@ -11,7 +11,7 @@ CREATE TABLE IF NOT EXISTS requests
     description VARCHAR(255),
     requester_id INT,
     created TIMESTAMP,
-    CONSTRAINT requests_booking_fr_user FOREIGN KEY (requester_id) REFERENCES users(id)
+    CONSTRAINT requests_fr_user FOREIGN KEY (requester_id) REFERENCES users(id)
 );
 
 
@@ -23,7 +23,7 @@ CREATE TABLE IF NOT EXISTS items (
     description VARCHAR(255),
     available BOOL,
     owner INT,
-    request VARCHAR(255)
+    request_id INT
 );
 
 CREATE TABLE IF NOT EXISTS booking (

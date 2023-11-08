@@ -5,21 +5,27 @@ import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
+import ru.practicum.shareit.request.dto.ItemRequestDto;
+import ru.practicum.shareit.request.model.ItemRequest;
+import ru.practicum.shareit.user.model.User;
 
-/**
- * TODO Sprint add-controllers.
- */
-
+import javax.persistence.Column;
 @Setter
 @Getter
 @AllArgsConstructor
 @EqualsAndHashCode
 @Builder(toBuilder = true)
-public final class ItemDto {
+public class ResponseItem {
     private Integer id;
+
     private String name;
+
     private String description;
+
     private Boolean available;
+
     private int owner;
-    Integer requestId;
+
+    private User request;
+
 }
