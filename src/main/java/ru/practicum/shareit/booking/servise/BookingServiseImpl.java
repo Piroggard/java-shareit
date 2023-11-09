@@ -13,6 +13,7 @@ import ru.practicum.shareit.booking.validation.BookingValidation;
 import ru.practicum.shareit.exception.StatusException;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.storage.ItemStorage;
+import ru.practicum.shareit.item.storage.JpaItemRepository;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.storage.JpaUserRepository;
 import ru.practicum.shareit.user.validation.UserValidation;
@@ -29,7 +30,7 @@ import java.util.List;
 public class BookingServiseImpl implements BookingServise {
     private final BookingValidation bookingValidation;
     private final JpaBooking jpaBooking;
-    private final ItemStorage itemStorage;
+    JpaItemRepository jpaItemRepository;
     private final UserValidation userValidation;
     private final JpaUserRepository jpaUserRepository;
 
@@ -38,8 +39,8 @@ public class BookingServiseImpl implements BookingServise {
         Item item = Item.builder().id(bookingDto.getItemId()).build();
         User user = User.builder().id(booker).build();
         User userBooker = jpaUserRepository.findUserById(booker);
-        Item itemOwner = itemStorage.getItem(bookingDto.getItemId());
-        Item itemValid = itemStorage.getItem(bookingDto.getItemId());
+        Item itemOwner = jpaItemRepository.findItemById(bookingDto.getItemId());
+        Item itemValid = jpaItemRepository.findItemById(bookingDto.getItemId());
         userValidation.checkingDataNull(userBooker);
         bookingValidation.checkItemAvailable(bookingDto, itemValid);
         bookingValidation.checOwner(booker, itemOwner);
