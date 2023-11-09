@@ -5,7 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.model.User;
-import ru.practicum.shareit.user.storage.UserStorage;
+import ru.practicum.shareit.user.storage.JpaUserRepository;
 import ru.practicum.shareit.user.validation.UserValidation;
 
 import java.util.List;
@@ -14,26 +14,28 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
-    private final UserStorage userStorage;
     private final UserValidation userValidation;
+    private final JpaUserRepository jpaUserRepository;
 
 
     @Override
     public User addUser(UserDto userDto) {
-        User userWithMail = userStorage.checkEmail(userDto.getEmail());
+        User userWithMail = jpaUserRepository.findUserByEmail(userDto.getEmail());
         userValidation.validationUser(userDto, userWithMail);
         User user = User.builder().name(userDto.getName()).email(userDto.getEmail()).build();
         log.info("Входный данне DTO {}", user);
-        return userStorage.addUser(user);
+        jpaUserRepository.save(user);
+        int primaryKey = user.getId();
+        return jpaUserRepository.getReferenceById(primaryKey);
     }
 
     @Override
     public User updateUser(Integer id, UserDto userDto) {
-        User userWithMail = userStorage.checkEmail(userDto.getEmail());
+        User userWithMail = jpaUserRepository.findUserByEmail(userDto.getEmail());
         userValidation.validationEmailUpdate(id, userWithMail);
         if (userDto.getEmail() == null)
             log.info("input Data {}", userDto);
-        User userUpdate = userStorage.getUser(id);
+        User userUpdate = jpaUserRepository.findUserById(id);
         if (userDto.getName() != null) {
             userUpdate.setName(userDto.getName());
         }
@@ -41,25 +43,27 @@ public class UserServiceImpl implements UserService {
             userUpdate.setEmail(userDto.getEmail());
         }
         log.info("updateUser {} ", userUpdate);
-
-        return userStorage.updateUser(userUpdate);
+        jpaUserRepository.save(userUpdate);
+        return jpaUserRepository.findUserById(userUpdate.getId());
     }
 
     @Override
     public User getUser(Integer id) {
-        User user = userStorage.getUser(id);
+        User user = jpaUserRepository.findUserById(id);
         userValidation.checkingDataNull(user);
         return user;
     }
 
     @Override
     public List<User> getUsers() {
-        return userStorage.getUser();
+        return jpaUserRepository.findAll();
 
     }
 
     @Override
     public void removeUser(Integer id) {
-        userStorage.removeUser(id);
+        jpaUserRepository.deleteById(id);
     }
+
+
 }

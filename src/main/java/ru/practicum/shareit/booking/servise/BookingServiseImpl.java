@@ -15,7 +15,7 @@ import ru.practicum.shareit.exception.StatusException;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.storage.ItemStorage;
 import ru.practicum.shareit.user.model.User;
-import ru.practicum.shareit.user.storage.UserStorage;
+import ru.practicum.shareit.user.storage.JpaUserRepository;
 import ru.practicum.shareit.user.validation.UserValidation;
 
 import javax.validation.ValidationException;
@@ -32,14 +32,14 @@ public class BookingServiseImpl implements BookingServise {
     private final BookingValidation bookingValidation;
     private final JpaBooking jpaBooking;
     private final ItemStorage itemStorage;
-    private final UserStorage userStorage;
     private final UserValidation userValidation;
+    private final JpaUserRepository jpaUserRepository;
 
     @Override
     public Booking addBooking(BookingDto bookingDto, Integer booker) {
         Item item = Item.builder().id(bookingDto.getItemId()).build();
         User user = User.builder().id(booker).build();
-        User userBooker = userStorage.getUser(booker);
+        User userBooker = jpaUserRepository.findUserById(booker);
         Item itemOwner = itemStorage.getItem(bookingDto.getItemId());
         Item itemValid = itemStorage.getItem(bookingDto.getItemId());
         userValidation.checkingDataNull(userBooker);
@@ -90,7 +90,7 @@ public class BookingServiseImpl implements BookingServise {
         PageRequest page = PageRequest.of(offset, size);
 
 
-        User user = userStorage.getUser(userId);
+        User user = jpaUserRepository.findUserById(userId);
         bookingValidation.checkBookerOrOwerUser(user);
         return bookingStorage.getAllBookingUsers(userId, page);
     }
@@ -156,7 +156,7 @@ public class BookingServiseImpl implements BookingServise {
 
     @Override
     public List<Booking> getBookingByOwner(String state, Integer idOwner, Integer from, Integer size) {
-        bookingValidation.checkBookerOrOwerUser(userStorage.getUser(idOwner));
+        bookingValidation.checkBookerOrOwerUser(jpaUserRepository.findUserById(idOwner));
 
         if (from < 0) {
             throw new ValidationException("Отрицательное значение фром");

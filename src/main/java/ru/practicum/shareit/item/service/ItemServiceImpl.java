@@ -8,17 +8,15 @@ import ru.practicum.shareit.booking.storage.BookingStorage;
 import ru.practicum.shareit.booking.storage.JpaBooking;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemDtoResponse;
-import ru.practicum.shareit.item.dto.ResponseItem;
 import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.CommentDto;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.storage.ItemStorage;
 import ru.practicum.shareit.item.storage.JpaCommentRepository;
 import ru.practicum.shareit.item.validation.ItemValidation;
-import ru.practicum.shareit.request.model.ItemRequest;
 import ru.practicum.shareit.request.storage.JpaItemRequest;
 import ru.practicum.shareit.user.model.User;
-import ru.practicum.shareit.user.storage.UserStorage;
+import ru.practicum.shareit.user.storage.JpaUserRepository;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -32,16 +30,16 @@ public class ItemServiceImpl implements ItemService {
     private final ItemStorage itemStorage;
     private final ItemValidation itemValidation;
     private JpaCommentRepository jpaCommentRepository;
-    private UserStorage userStorage;
+
     private BookingStorage bookingStorage;
     private JpaBooking jpaBooking;
     private MappingComment mappingComment;
     private JpaItemRequest jpaItemRequest;
-
+    private final JpaUserRepository jpaUserRepository;
 
     @Override
     public ItemDtoResponse addItem(Integer id, ItemDto itemDto) {
-        User user = userStorage.getUser(id);
+        User user = jpaUserRepository.findUserById(id);
         itemValidation.checkItem(itemDto);
         itemValidation.checkUserId(user);
         //ItemRequest itemRequest = jpaItemRequest.findAllById(itemDto.getRequestId());
@@ -122,7 +120,7 @@ public class ItemServiceImpl implements ItemService {
         itemValidation.checkCommentBoocking(idUser, bookings);
         LocalDateTime localDateTime = LocalDateTime.now();
         Item item = itemStorage.getItem(itemId);
-        User user = userStorage.getUser(idUser);
+        User user = jpaUserRepository.findUserById(idUser);
         Comment comment = Comment.builder()
                 .text(commentDto.getText())
                 .item(item)

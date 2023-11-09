@@ -8,14 +8,14 @@ import ru.practicum.shareit.exception.ValidationException;
 import ru.practicum.shareit.exception.ValidationIdException;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.model.User;
-import ru.practicum.shareit.user.storage.UserStorage;
+import ru.practicum.shareit.user.storage.JpaUserRepository;
 
 @AllArgsConstructor
 @Slf4j
 @Component
 public class UserValidation {
-    private final UserStorage userStorage;
 
+    private final JpaUserRepository jpaUserRepository;
     public void validationUser(UserDto userDto, User user) {
         log.info("user {}", userDto);
         validationUserData(userDto);
@@ -38,8 +38,8 @@ public class UserValidation {
     public void validationEmaiAdd(User userValid) {
         if (userValid != null) {
             User user = new User();
-            userStorage.addUser(user);
-            userStorage.removeUser(user.getId());
+            jpaUserRepository.save(user);
+            jpaUserRepository.deleteById(user.getId());
             throw new ValidationException("Такая почта уже существует");
         }
     }
