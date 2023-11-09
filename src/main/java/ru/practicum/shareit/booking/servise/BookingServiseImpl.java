@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.model.Status;
-import ru.practicum.shareit.booking.storage.BookingStorage;
 import ru.practicum.shareit.booking.storage.JpaBooking;
 import ru.practicum.shareit.booking.validation.BookingValidation;
 import ru.practicum.shareit.exception.StatusException;
@@ -28,7 +27,6 @@ import java.util.List;
 @AllArgsConstructor
 @Service
 public class BookingServiseImpl implements BookingServise {
-    private final BookingStorage bookingStorage;
     private final BookingValidation bookingValidation;
     private final JpaBooking jpaBooking;
     private final ItemStorage itemStorage;
@@ -55,12 +53,13 @@ public class BookingServiseImpl implements BookingServise {
                 .booker(user)
                 .status(Status.WAITING)
                 .build();
-        return bookingStorage.addBooking(booking);
+        jpaBooking.save(booking);
+        return jpaBooking.findAllBookingsWithItemAndUserById(booking.getId());
     }
 
     @Override
     public Booking updateBooking(Integer bookingId, Integer userId, Boolean approved) {
-        Booking booking = bookingStorage.getBookingById(bookingId);
+        Booking booking = jpaBooking.getBookingByIdOrderByStart(bookingId);
         bookingValidation.checkUpdateBooking(userId, approved, booking);
         bookingValidation.checIdkBookerUpdate(approved, booking);
         if (approved) {
@@ -68,17 +67,18 @@ public class BookingServiseImpl implements BookingServise {
         } else {
             booking.setStatus(Status.REJECTED);
         }
-        return bookingStorage.addBooking(booking);
+        jpaBooking.save(booking);
+        return jpaBooking.findAllBookingsWithItemAndUserById(booking.getId());
     }
 
     @Override
     public Booking getBooking(Integer bookingId, Integer id) {
-        Booking booking = bookingStorage.getBookingById(bookingId);
+        Booking booking = jpaBooking.getBookingByIdOrderByStart(bookingId);
         bookingValidation.checkBooking(booking);
 
-        bookingValidation.checkBookerOrOwer(bookingStorage.getAllBookingUsers(id, Pageable.unpaged()),
-                bookingStorage.getBookingByOwner(id,  Pageable.unpaged()));
-        return bookingStorage.getBookingById(bookingId);
+        bookingValidation.checkBookerOrOwer(jpaBooking.findAllByBooker_IdOrderByStartDesc(id, Pageable.unpaged()),
+                jpaBooking.findBookingByItem_OwnerOrderByStartDesc(id,  Pageable.unpaged()));
+        return jpaBooking.getBookingByIdOrderByStart(bookingId);
     }
 
     @Override
@@ -92,7 +92,7 @@ public class BookingServiseImpl implements BookingServise {
 
         User user = jpaUserRepository.findUserById(userId);
         bookingValidation.checkBookerOrOwerUser(user);
-        return bookingStorage.getAllBookingUsers(userId, page);
+        return jpaBooking.findAllByBooker_IdOrderByStartDesc(userId, page);
     }
 
 
@@ -108,24 +108,24 @@ public class BookingServiseImpl implements BookingServise {
 
 
         if (state.equals("ALL")) {
-            return bookingStorage.getAllBookingUsers(id , page);
+            return jpaBooking.findAllByBooker_IdOrderByStartDesc(id , page);
         }
         if (state.equals("FUTURE")) {
-            return bookingStorage.findBookingsWithFutureStartTime(id);
+            return jpaBooking.findBookingsWithFutureStartTime(id);
         }
         if (state.equals("UNSUPPORTED_STATUS")) {
             throw new StatusException("Unknown state: UNSUPPORTED_STATUS");
         }
         if (state.equals("WAITING")) {
-            return bookingStorage.findAllByStatus(Status.WAITING);
+            return jpaBooking.findAllByStatus(Status.WAITING);
         }
 
         if (state.equals("REJECTED")) {
-            return bookingStorage.findAllByItem_OwnerOrStatus(id, Status.REJECTED);
+            return jpaBooking.findAllByBooker_IdAndStatus(id, Status.REJECTED);
         }
 
         if (state.equals("CURRENT")) {
-            List<Booking> bookingList = bookingStorage.getAllBookingUsers(id, page);
+            List<Booking> bookingList = jpaBooking.findAllByBooker_IdOrderByStartDesc(id, page);
             List<Booking> list = new ArrayList<>();
             LocalDateTime localDateTime = LocalDateTime.now();
 
@@ -139,7 +139,7 @@ public class BookingServiseImpl implements BookingServise {
         }
 
         if (state.equals("PAST")) {
-            List<Booking> bookingList = bookingStorage.getAllBookingUsers(id, page);
+            List<Booking> bookingList = jpaBooking.findAllByBooker_IdOrderByStartDesc(id, page);
             List<Booking> list = new ArrayList<>();
             LocalDateTime localDateTime = LocalDateTime.now();
 
@@ -166,10 +166,10 @@ public class BookingServiseImpl implements BookingServise {
 
 
         if (state == null) {
-            return bookingStorage.getBookingByOwner(idOwner, page);
+            return jpaBooking.findBookingByItem_OwnerOrderByStartDesc(idOwner, page);
         }
         if (state.equals("ALL")) {
-            return bookingStorage.getBookingByOwner(idOwner, page);
+            return jpaBooking.findBookingByItem_OwnerOrderByStartDesc(idOwner, page);
         }
         if (state.equals("FUTURE")) {
             return jpaBooking.findBooking(idOwner);
@@ -178,19 +178,19 @@ public class BookingServiseImpl implements BookingServise {
             throw new StatusException("Unknown state: UNSUPPORTED_STATUS");
         }
         if (state.equals("WAITING")) {
-            return bookingStorage.findAllByStatus(Status.WAITING);
+            return jpaBooking.findAllByStatus(Status.WAITING);
         }
 
         if (state.equals("REJECTED")) {
-            return bookingStorage.findAllByItem_OwnerOrStatusWaiting(idOwner, Status.REJECTED);
+            return jpaBooking.findAllByItem_OwnerAndStatus(idOwner, Status.REJECTED);
         }
 
         if (state.equals("CURRENT")) {
-            return bookingStorage.findAllByItem_OwnerOrStatusWaiting(idOwner, Status.REJECTED);
+            return jpaBooking.findAllByItem_OwnerAndStatus(idOwner, Status.REJECTED);
         }
 
         if (state.equals("PAST")) {
-            List<Booking> bookingList = bookingStorage.getBookingByOwner(idOwner, page);
+            List<Booking> bookingList = jpaBooking.findBookingByItem_OwnerOrderByStartDesc(idOwner, page);
             List<Booking> list = new ArrayList<>();
             LocalDateTime localDateTime = LocalDateTime.now();
 

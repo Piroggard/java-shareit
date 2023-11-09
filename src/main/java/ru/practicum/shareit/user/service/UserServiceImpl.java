@@ -24,9 +24,7 @@ public class UserServiceImpl implements UserService {
         userValidation.validationUser(userDto, userWithMail);
         User user = User.builder().name(userDto.getName()).email(userDto.getEmail()).build();
         log.info("Входный данне DTO {}", user);
-        jpaUserRepository.save(user);
-        int primaryKey = user.getId();
-        return jpaUserRepository.getReferenceById(primaryKey);
+        return jpaUserRepository.save(user);
     }
 
     @Override
@@ -43,8 +41,8 @@ public class UserServiceImpl implements UserService {
             userUpdate.setEmail(userDto.getEmail());
         }
         log.info("updateUser {} ", userUpdate);
-        jpaUserRepository.save(userUpdate);
-        return jpaUserRepository.findUserById(userUpdate.getId());
+        return jpaUserRepository.save(userUpdate);
+
     }
 
     @Override

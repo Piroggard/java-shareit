@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.booking.model.Booking;
-import ru.practicum.shareit.booking.storage.BookingStorage;
 import ru.practicum.shareit.booking.storage.JpaBooking;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemDtoResponse;
@@ -31,7 +30,6 @@ public class ItemServiceImpl implements ItemService {
     private final ItemValidation itemValidation;
     private JpaCommentRepository jpaCommentRepository;
 
-    private BookingStorage bookingStorage;
     private JpaBooking jpaBooking;
     private MappingComment mappingComment;
     private JpaItemRequest jpaItemRequest;
@@ -114,7 +112,7 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public CommentDto addComment(Integer idUser, Integer itemId, CommentDto commentDto) {
-        LocalDateTime start = bookingStorage.getBookingById(itemId).getStart();
+        LocalDateTime start = jpaBooking.getBookingByIdOrderByStart(itemId).getStart();
         itemValidation.checkComment(commentDto.getText(), start);
         List<Booking> bookings = jpaBooking.findAllByBooker_IdAndItem_Id(idUser, itemId);
         itemValidation.checkCommentBoocking(idUser, bookings);
