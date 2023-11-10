@@ -12,14 +12,18 @@ import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.model.Status;
 import ru.practicum.shareit.booking.servise.BookingServiseImpl;
 import ru.practicum.shareit.booking.storage.JpaBooking;
+import ru.practicum.shareit.booking.validation.BookingValidation;
 import ru.practicum.shareit.item.model.Item;
+import ru.practicum.shareit.item.storage.JpaItemRepository;
 import ru.practicum.shareit.user.model.User;
+import ru.practicum.shareit.user.storage.JpaUserRepository;
+import ru.practicum.shareit.user.validation.UserValidation;
 
 import java.time.LocalDateTime;
 
 import static net.bytebuddy.matcher.ElementMatchers.any;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class bookingServiseImplTest {
@@ -27,6 +31,14 @@ public class bookingServiseImplTest {
     private BookingServiseImpl bookingServise;
     @Mock
     private JpaBooking jpaBooking;
+    @Mock
+    private JpaUserRepository jpaUserRepository;
+    @Mock
+    private JpaItemRepository jpaItemRepository;
+    @Mock
+    private UserValidation userValidation;
+    @Mock
+    private BookingValidation bookingValidation;
     private Item item;
     private User user;
     private Booking booking;
@@ -69,13 +81,20 @@ public class bookingServiseImplTest {
     void addBooking (){
        when(jpaBooking.save(booking)).thenReturn(booking);
        when(jpaBooking.findAllBookingsWithItemAndUserById(1)).thenReturn(booking);
+       when(jpaUserRepository.findUserById(1)).thenReturn(user);
+       when(jpaItemRepository.findItemById(1)).thenReturn(item);
+
+        doNothing().when(userValidation).checkingDataNull(user);
+        doNothing().when(bookingValidation).checkItemAvailable(bookingDto, item);
+        doNothing().when(bookingValidation).checOwner(1, item);
+        doNothing().when(bookingValidation).bookerValidation(user);
+
+        doNothing().when(bookingValidation).checkBooking(booking);
+
+
 
        Booking booking1 = bookingServise.addBooking(bookingDto , user.getId());
         assertEquals(booking1 , booking);
-
-
-
-
     }
 
 

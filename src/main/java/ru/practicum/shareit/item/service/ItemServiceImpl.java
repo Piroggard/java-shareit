@@ -12,11 +12,9 @@ import ru.practicum.shareit.item.dto.ItemDtoResponse;
 import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.CommentDto;
 import ru.practicum.shareit.item.model.Item;
-import ru.practicum.shareit.item.storage.ItemStorage;
 import ru.practicum.shareit.item.storage.JpaCommentRepository;
 import ru.practicum.shareit.item.storage.JpaItemRepository;
 import ru.practicum.shareit.item.validation.ItemValidation;
-import ru.practicum.shareit.request.storage.JpaItemRequest;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.storage.JpaUserRepository;
 
@@ -30,7 +28,7 @@ import java.util.Objects;
 @Service
 
 public class ItemServiceImpl implements ItemService {
-    private final ItemStorage itemStorage;
+
     private final ItemValidation itemValidation;
     private JpaCommentRepository jpaCommentRepository;
 
