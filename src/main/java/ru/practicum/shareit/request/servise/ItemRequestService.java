@@ -1,12 +1,10 @@
 package ru.practicum.shareit.request.servise;
 
-import ru.practicum.shareit.request.dto.ItemRequestDto;
-import ru.practicum.shareit.request.dto.ItemRequestResponseDto;
-import ru.practicum.shareit.request.dto.ItemResponseDto;
-import ru.practicum.shareit.request.model.ItemRequest;
+import ru.practicum.shareit.request.ItemRequestDto;
+import ru.practicum.shareit.request.ItemRequestResponseDto;
+import ru.practicum.shareit.request.ItemResponseDto;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface ItemRequestService {
    ItemResponseDto addItemRequest (Integer userId , ItemRequestDto itemRequest);
