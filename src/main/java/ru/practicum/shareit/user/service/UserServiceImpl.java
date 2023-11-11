@@ -1,67 +1,67 @@
 package ru.practicum.shareit.user.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.storage.JpaUserRepository;
 import ru.practicum.shareit.user.validation.UserValidation;
 
+import java.util.Collection;
 import java.util.List;
 
-@Slf4j
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class UserServiceImpl implements UserService {
-    private final UserValidation userValidation;
-    private final JpaUserRepository jpaUserRepository;
-
+    private final UserRepository userRepository;
 
     @Override
-    public User addUser(UserDto userDto) {
-        User userWithMail = jpaUserRepository.findUserByEmail(userDto.getEmail());
-        userValidation.validationUser(userDto, userWithMail);
-        User user = User.builder().name(userDto.getName()).email(userDto.getEmail()).build();
-        log.info("Входный данне DTO {}", user);
-        return jpaUserRepository.save(user);
+    @Transactional(readOnly = true)
+    public Collection<User> getAllUsers() {
+        log.info("Получен список всех пользователей");
+        return userRepository.findAll();
     }
 
     @Override
-    public User updateUser(Integer id, UserDto userDto) {
-        User userWithMail = jpaUserRepository.findUserByEmail(userDto.getEmail());
-        userValidation.validationEmailUpdate(id, userWithMail);
-        if (userDto.getEmail() == null)
-            log.info("input Data {}", userDto);
-        User userUpdate = jpaUserRepository.findUserById(id);
-        if (userDto.getName() != null) {
-            userUpdate.setName(userDto.getName());
-        }
-        if (userDto.getEmail() != null) {
-            userUpdate.setEmail(userDto.getEmail());
-        }
-        log.info("updateUser {} ", userUpdate);
-        return jpaUserRepository.save(userUpdate);
-
+    @Transactional
+    @SneakyThrows
+    public User saveUser(User user) {
+        log.info("Создан пользователь, id = {} ", user);
+        return userRepository.save(user);
     }
 
     @Override
-    public User getUser(Integer id) {
-        User user = jpaUserRepository.findUserById(id);
-        userValidation.checkingDataNull(user);
+    @Transactional
+    public void deleteUser(Long id) {
+        log.info("Удалён пользователь, id = {} ", id);
+        userRepository.deleteById(id);
+    }
+
+    @Override
+    @Transactional
+    public User updateUser(User user) {
+        User oldUser = userRepository.findById(user.getId()).orElseThrow(() ->
+                new UserNotFoundException("Пользователь не найден " + user.getId()));
+        if (user.getName() != null) {
+            oldUser.setName(user.getName());
+        }
+        if (user.getEmail() != null) {
+            oldUser.setEmail(user.getEmail());
+        }
+        log.info("Данные пользователя {} обновлены ", user);
+        return userRepository.save(oldUser);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public User getUserById(Long id) {
+        User user = userRepository.findById(id).orElseThrow(() ->
+                new UserNotFoundException("Пользователь не найден " + id));
+        log.info("Получен пользователь, id = {} ", id);
         return user;
     }
-
-    @Override
-    public List<User> getUsers() {
-        return jpaUserRepository.findAll();
-
-    }
-
-    @Override
-    public void removeUser(Integer id) {
-        jpaUserRepository.deleteById(id);
-    }
-
-
 }
