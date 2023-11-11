@@ -1,263 +1,230 @@
 package ru.practicum.shareit.item.service;
 
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import ru.practicum.shareit.booking.enums.Status;
 import ru.practicum.shareit.booking.model.Booking;
-import ru.practicum.shareit.booking.model.BookingConcise;
-import ru.practicum.shareit.booking.model.Status;
+import ru.practicum.shareit.booking.repository.BookingRepository;
+import ru.practicum.shareit.comment.dto.CommentDto;
+import ru.practicum.shareit.comment.dto.CommentMapper;
+import ru.practicum.shareit.comment.model.Comment;
+import ru.practicum.shareit.comment.repository.CommentRepository;
+import ru.practicum.shareit.exceptions.BadRequestException;
+import ru.practicum.shareit.exceptions.ItemNotFoundException;
+import ru.practicum.shareit.exceptions.NotFoundException;
+import ru.practicum.shareit.exceptions.UserNotFoundException;
 import ru.practicum.shareit.item.dto.ItemDto;
-import ru.practicum.shareit.item.dto.ItemDtoResponse;
-import ru.practicum.shareit.item.model.Comment;
-import ru.practicum.shareit.item.model.CommentDto;
 import ru.practicum.shareit.item.model.Item;
-import ru.practicum.shareit.item.storage.JpaCommentRepository;
-import ru.practicum.shareit.item.storage.JpaItemRepository;
-import ru.practicum.shareit.item.validation.ItemValidation;
+import ru.practicum.shareit.item.repository.ItemRepository;
+import ru.practicum.shareit.item.storage.ItemRepository;
+import ru.practicum.shareit.mappers.ItemMapper;
 import ru.practicum.shareit.user.model.User;
-import ru.practicum.shareit.user.storage.JpaUserRepository;
+import ru.practicum.shareit.user.repository.UserRepository;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
-@Slf4j
-@AllArgsConstructor
+import static ru.practicum.shareit.comment.dto.CommentMapper.toCommentDto;
+import static ru.practicum.shareit.mappers.BookingMapper.toBookingDtoShort;
+import static ru.practicum.shareit.mappers.ItemMapper.toItem;
+import static ru.practicum.shareit.mappers.ItemMapper.toItemDto;
+
 @Service
-
+@Slf4j
+@RequiredArgsConstructor
 public class ItemServiceImpl implements ItemService {
 
-    private final ItemValidation itemValidation;
-    private JpaCommentRepository jpaCommentRepository;
+    private final ItemRepository itemRepository;
+    private final UserRepository userRepository;
+    private final CommentRepository commentRepository;
+    private final BookingRepository bookingRepository;
 
-    private JpaBooking jpaBooking;
-    private MappingComment mappingComment;
-
-    private final JpaUserRepository jpaUserRepository;
-    private JpaItemRepository jpaItemRepository;
+    private final ModelMapper mapper = new ModelMapper();
 
     @Override
-    public ItemDtoResponse addItem(Integer id, ItemDto itemDto) {
-        User user = jpaUserRepository.findUserById(id);
-        itemValidation.checkItem(itemDto);
-        itemValidation.checkUserId(user);
-        //ItemRequest itemRequest = jpaItemRequest.findAllById(itemDto.getRequestId());
-        log.info("id {} , itemDto {}", id, itemDto);
-        Item item = Item.builder().name(itemDto.getName()).description(itemDto.getDescription())
-                .owner(id).available(itemDto.getAvailable()).request(itemDto.getRequestId()).build();
-        jpaItemRepository.save(item);
-        ItemDtoResponse itemDtoResponse = ItemDtoResponse.builder()
-                .id(item.getId())
-                .name(item.getName())
-                .description(item.getDescription())
-                .available(item.getAvailable())
-                .owner(item.getOwner())
-                .requestId(item.getRequest()).build();
+    @Transactional
+    @SneakyThrows
+    public Item saveItem(ItemDto itemDto, Long userId) {
+        User user = userRepository.findById(userId).orElseThrow(() ->
+                new UserNotFoundException("Пользователь не найден " + userId));
+        Item item = toItem(user, itemDto);
+        log.info("Добавлен предмет {}, владелец: id = {}", itemDto, userId);
+        item.setOwnerId(userId);
+        item.setRequest(itemDto.getRequestId());
 
-                /*ResponseItem responseItem = ResponseItem.builder()
-                        .id(item.getId())
-                        .name(item.getName())
-                        .description(item.getDescription())
-                        .owner(item.getOwner())
-                        .available(item.getAvailable())
-                        .request(itemRequest.getRequester()).build();*/
-
-                return itemDtoResponse;
+        return itemRepository.save(item);
     }
 
     @Override
-    public Item updateItem(Integer idUser, Integer itemId, ItemDto itemDto) {
+    @Transactional
+    public Item updateItem(ItemDto itemDto, Long userId) {
+        User user = userRepository.findById(userId).orElseThrow(() ->
+                new UserNotFoundException("Пользователь не найден " + userId));
+        Item itemUpdate = itemRepository.findById(itemDto.getId()).orElseThrow(() ->
+                new ItemNotFoundException("Предмет не найден " + itemDto.getId()));
+        Item item = toItem(user, itemDto);
+        itemUpdate.setOwnerId(userId);
+        if (Objects.nonNull(item.getName())) {
+            itemUpdate.setName(item.getName());
+        }
+        if (Objects.nonNull(item.getDescription())) {
+            itemUpdate.setDescription(item.getDescription());
+        }
+        if (Objects.nonNull(item.getAvailable())) {
+            itemUpdate.setAvailable(item.getAvailable());
+        }
+        log.info("Выполнено обновление информации о предмете = {}, " +
+                "принадлежащем пользователю, id = {}", item.getId(), userId);
+        return itemRepository.save(itemUpdate);
+    }
 
-        itemValidation.checkItemUpdate(idUser, jpaItemRepository.findItemById(itemId));
-        Item item = jpaItemRepository.findItemById(itemId);
+    @Override
+    @Transactional(readOnly = true)
+    public ItemDto getItemById(Long userId, Long itemId) {
+        Item item = itemRepository.findById(itemId).orElseThrow(() ->
+                new ItemNotFoundException("Предмет не найден " + itemId));
+        List<Comment> comments = commentRepository.findAllByItemId(itemId);
+        ItemDto itemDto = toItemDto(item);
+        if (item.getOwnerId().equals(userId)) {
+            addLastAndNextDateTimeForBookingToItem(itemDto);
+        }
+        itemDto.setComments(comments.stream()
+                .map(CommentMapper::toCommentDto)
+                .collect(Collectors.toList()));
+        log.info("Получен предмет, id = {}", itemId);
+        return itemDto;
+    }
 
-        if (itemDto.getName() != null) {
-            item.setName(itemDto.getName());
+    @Override
+    @Transactional(readOnly = true)
+    public List<ItemDto> getItemsByUser(Long userId, int from, int size) {
+        if (!userRepository.existsById(userId)) {
+            log.debug("Пользователь {} не найден", userId);
+            throw new UserNotFoundException("Пользователь не найден " + userId);
         }
 
-        if (itemDto.getDescription() != null) {
-            item.setDescription(itemDto.getDescription());
+        if ((from < 0 || size < 0 || (from == 0 && size == 0))) {
+            throw new BadRequestException(HttpStatus.BAD_REQUEST, "Неправильный параметр пагинации");
+        }
+        Pageable pageable = PageRequest.of(from / size, size);
+        if (itemRepository.findAllByOwnerId(userId, pageable) == null) {
+            log.info("У пользователя {} нет предметов для аренды ", userId);
+            throw new ItemNotFoundException("У пользователя нет предметов для аренды " + userId);
         }
 
-        if (itemDto.getAvailable() != null) {
-            item.setAvailable(itemDto.getAvailable());
+        List<ItemDto> itemsList = itemRepository.findAllByOwnerId(userId, pageable)
+                .stream()
+                .map(ItemMapper::toItemDto)
+                .collect(Collectors.toList());
+        itemsList.forEach(this::addLastAndNextDateTimeForBookingToItem);
+
+        log.info("Список всех предметов, принадлежащих пользователю, id = {}", userId);
+        return itemsList;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Collection<ItemDto> searchItem(String text, int from, int size) {
+        if (text.isEmpty()) {
+            log.debug("Запрос не найден");
+            return Collections.emptyList();
         }
-        return jpaItemRepository.save(item);
-    }
-
-    @Override
-    public ItemDtoResponse getItem(Integer itemId, Integer id) {
-        itemValidation.checItemId(jpaItemRepository.findItemById(itemId));
-        ItemDtoResponse item = getItemAndBooking(itemId, id);
-        itemValidation.checkingDataNull(item);
-        return item;
-    }
-
-    @Override
-    public List<ItemDtoResponse> getItemUser(Integer userId) {
-        return getItemUsers(userId);
-
-    }
-
-    @Override
-    public List<Item> getItemByName(String text) {
-
-        String textToLower = text.toLowerCase();
-        log.info(textToLower);
-        if (text.length() == 0) {
-            List<Item> itemList = new ArrayList<>();
-            return itemList;
+        String textToLowerCase = text.toLowerCase();
+        if ((from < 0 || size < 0 || (from == 0 && size == 0))) {
+            throw new BadRequestException(HttpStatus.BAD_REQUEST, "Неправильный параметр пагинации");
         }
-        return jpaItemRepository.search(textToLower);
-    }
-
-    @Override
-    public CommentDto addComment(Integer idUser, Integer itemId, CommentDto commentDto) {
-        LocalDateTime start = jpaBooking.getBookingByIdOrderByStart(itemId).getStart();
-        itemValidation.checkComment(commentDto.getText(), start);
-        List<Booking> bookings = jpaBooking.findAllByBooker_IdAndItem_Id(idUser, itemId);
-        itemValidation.checkCommentBoocking(idUser, bookings);
-        LocalDateTime localDateTime = LocalDateTime.now();
-        Item item = jpaItemRepository.findItemById(itemId);
-        User user = jpaUserRepository.findUserById(idUser);
-        Comment comment = Comment.builder()
-                .text(commentDto.getText())
-                .item(item)
-                .author(user)
-                .created(localDateTime).build();
-        return mappingComment.mappingCommentInCommentDto(jpaCommentRepository.save(comment));
-    }
-
-    public ItemDtoResponse getItemAndBooking(Integer id, Integer ownerId) {
-        LocalDateTime localDateTime = LocalDateTime.now();
-
-        Item item = jpaItemRepository.findItemById(id);
-
-        Booking nextBooking = jpaBooking.findFirstByItemIdAndStatusAndStartIsAfterOrStartEqualsOrderByStart(id,
-                Status.APPROVED, localDateTime, localDateTime);
-        Booking lastBooking = jpaBooking.findFirstByItemIdAndStatusAndStartIsBeforeOrStartEqualsOrderByEndDesc(id,
-                Status.APPROVED, localDateTime, localDateTime);
-
-        BookingConcise bookingConciseLast = null;
-        BookingConcise bookingConciseNext = null;
-
-        if (item.getOwner() == ownerId) {
-            if (nextBooking == null) {
-                bookingConciseNext = null;
-            } else {
-                bookingConciseLast = BookingConcise.builder().id(nextBooking.getId())
-                        .bookerId(nextBooking.getBooker().getId()).build();
-            }
-            if (lastBooking == null) {
-                bookingConciseLast = null;
-            } else {
-                bookingConciseNext = BookingConcise.builder().id(lastBooking.getId())
-                        .bookerId(lastBooking.getBooker().getId()).build();
-            }
+        Pageable pageable;
+        if (text == null || text.isEmpty()) {
+            log.debug("Предмет по запросу {} не найден", text);
+            return Collections.emptyList();
         } else {
-            bookingConciseLast = null;
-            bookingConciseNext = null;
+            pageable = PageRequest.of(from / size, size);
         }
-        List<CommentDto> commentDtoList = new ArrayList<>();
-        List<Comment> comments = jpaCommentRepository.findAllByItem_Id(item.getId());
-        for (Comment comment : comments) {
-            CommentDto commentDto = CommentDto.builder()
-                    .id(comment.getId())
-                    .text(comment.getText())
-                    .itemId(comment.getItem().getId())
-                    .authorName(comment.getAuthor().getName())
-                    .created(comment.getCreated()).build();
-            commentDtoList.add(commentDto);
-        }
-        ItemDtoResponse itemDtoResponse = ItemDtoResponse.builder().id(item.getId())
-                .name(item.getName())
-                .description(item.getDescription())
-                .available(item.getAvailable())
-                .owner(item.getOwner())
-                .nextBooking(bookingConciseLast)
-                .comments(commentDtoList)
-                .lastBooking(bookingConciseNext).build();
-        return itemDtoResponse;
+        log.info("Выполнен поиск среди предметов по : {}.", text);
+        return itemRepository.searchItem(textToLowerCase, pageable)
+                .stream()
+                .map(item -> toItemDto(item))
+                .collect(Collectors.toList());
     }
 
-    public List<ItemDtoResponse> getItemUsers(Integer userId) {
-        List<ItemDtoResponse> itemDtoResponses = new ArrayList<>();
-        List<Item> itemList = jpaItemRepository.findAllByOwner(userId);
-        List<Booking> allbookings = jpaBooking.findAll();
-        for (Item item : itemList) {
-            LocalDateTime currentDateTime = LocalDateTime.now();
-            List<Booking> bookingListByItemId = new ArrayList<>();
-            List<LocalDateTime> dateTimesStart = new ArrayList<>();
-            List<LocalDateTime> dateTimesEnd = new ArrayList<>();
-
-            for (Booking booking : allbookings) {
-                if (Objects.equals(booking.getItem().getId(), item.getId()) && Status.APPROVED == booking.getStatus()) {
-                    bookingListByItemId.add(booking);
-                    dateTimesStart.add(booking.getStart());
-                    dateTimesEnd.add(booking.getEnd());
-                }
-            }
-
-            Booking nextBooking = null;
-            Booking lastBooking = null;
-            LocalDateTime closestPastDateTime = null;
-            LocalDateTime firstPastDateTime = null;
-
-            for (LocalDateTime dateTime : dateTimesStart) {
-                if (dateTime.isBefore(currentDateTime)) {
-                    if (closestPastDateTime == null || dateTime.isAfter(closestPastDateTime)) {
-                        closestPastDateTime = dateTime;
-                    }
-                }
-            }
-
-            for (LocalDateTime dateTime : dateTimesEnd) {
-                if (dateTime.isAfter(currentDateTime)) {
-                    if (firstPastDateTime == null || dateTime.isBefore(firstPastDateTime)) {
-                        firstPastDateTime = dateTime;
-                    }
-                }
-            }
-
-
-            for (Booking booking : bookingListByItemId) {
-                if (booking.getStart().equals(closestPastDateTime)) {
-                    lastBooking = booking;
-                }
-            }
-
-            for (Booking booking : bookingListByItemId) {
-                if (booking.getEnd().equals(firstPastDateTime)) {
-                    nextBooking = booking;
-                }
-            }
-            BookingConcise bookingConciseLast;
-            BookingConcise bookingConciseNext;
-
-            if (lastBooking != null || nextBooking != null) {
-                bookingConciseLast = BookingConcise.builder().id(nextBooking.getId())
-                        .bookerId(nextBooking.getBooker().getId()).build();
-                bookingConciseNext = BookingConcise.builder().id(lastBooking.getId())
-                        .bookerId(lastBooking.getBooker().getId()).build();
-            } else {
-                bookingConciseLast = null;
-                bookingConciseNext = null;
-            }
-
-            ItemDtoResponse itemDtoResponse = ItemDtoResponse.builder().id(item.getId())
-                    .name(item.getName())
-                    .description(item.getDescription())
-                    .available(item.getAvailable())
-                    .owner(item.getOwner())
-                    .nextBooking(bookingConciseLast)
-                    .lastBooking(bookingConciseNext).build();
-            itemDtoResponses.add(itemDtoResponse);
-            nextBooking = null;
-            lastBooking = null;
-            bookingConciseNext = null;
-            bookingConciseLast = null;
+    @Override
+    @Transactional
+    public CommentDto postComment(Long userId, Long itemId, CommentDto commentDto) {
+        if (commentDto.getText().isEmpty()) {
+            log.debug("Комментарий не может быть пустьм");
+            throw new BadRequestException(HttpStatus.BAD_REQUEST, "Комментарий не может быть пустым");
         }
-        return itemDtoResponses;
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new NotFoundException(HttpStatus.NOT_FOUND, "комментарий  к предмету с id = '" + itemId
+                        + "' пользователем с id = " + userId + " ; нет информации о пользователе."));
+
+        Item item = itemRepository.findById(itemId)
+                .orElseThrow(() -> new NotFoundException(HttpStatus.NOT_FOUND, "комментарий к предмету с id = '" + itemId
+                        + "' пользователем с id = '" + userId + "' - отсутствует запись о вещи."));
+
+        List<Booking> bookings = item.getBookings();
+
+        if (bookings
+                .stream()
+                .filter(booking -> (booking.getBooker().getId().equals(userId))
+                        && !booking.getStart().isAfter(LocalDateTime.now())
+                        && !booking.getStatus().equals(Status.REJECTED)
+                )
+                .collect(Collectors.toList()).size() == 0) {
+            throw new BadRequestException(HttpStatus.BAD_REQUEST,
+                    "Комментировать может только арендатор предмета, с наступившим началом времени бронирования " +
+                            "и статусом НЕ REJECTED");
+        }
+
+        Comment comment = mapper.map(commentDto, Comment.class);
+        comment.setItem(item);
+        comment.setAuthor(user);
+        comment.setCreated(LocalDateTime.now());
+
+        commentRepository.save(comment);
+
+        return toCommentDto(comment);
+    }
+
+    @Override
+    @Transactional
+    public void deleteItemById(Long userId, Long itemId) {
+        userRepository.findById(userId);
+        itemRepository.deleteById(itemId);
+        log.info("Удален предмет {}, принадлежащий пользователю {}", itemId, userId);
+    }
+
+    private void addLastAndNextDateTimeForBookingToItem(ItemDto itemDto) {
+        LocalDateTime timeNow = LocalDateTime.now();
+
+        Booking next = bookingRepository
+                .findFirstBookingByItemIdAndStartIsAfterAndStatusNotLikeOrderByStartAsc(itemDto.getId(),
+                        timeNow, Status.REJECTED);
+        Booking last = bookingRepository
+                .findFirstBookingByItemIdAndStartIsBeforeAndStatusNotLikeOrderByStartDesc(itemDto.getId(),
+                        timeNow, Status.REJECTED);
+
+        if (next != null) {
+            itemDto.setNextBooking(toBookingDtoShort(next));
+        } else {
+            itemDto.setNextBooking(null);
+        }
+
+        if (last != null) {
+            itemDto.setLastBooking(toBookingDtoShort(last));
+        } else {
+            itemDto.setLastBooking(null);
+        }
     }
 }

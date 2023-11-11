@@ -12,7 +12,6 @@ import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.model.Status;
 import ru.practicum.shareit.booking.validation.BookingValidation;
 import ru.practicum.shareit.item.model.Item;
-import ru.practicum.shareit.item.storage.JpaItemRepository;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.storage.JpaUserRepository;
 import ru.practicum.shareit.user.validation.UserValidation;

@@ -8,16 +8,25 @@ import ru.practicum.shareit.item.model.Item;
 
 import java.util.List;
 
+import ru.practicum.shareit.comment.dto.CommentDto;
+import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.item.model.Item;
+
+import java.util.Collection;
+import java.util.List;
+
 public interface ItemService {
-    ItemDtoResponse addItem(Integer id, ItemDto itemDto);
+    Item saveItem(ItemDto itemDto, Long userId);
 
-    Item updateItem(Integer idUser, Integer itemId, ItemDto itemDto);
+    Item updateItem(ItemDto itemDto, Long userId);
 
-    ItemDtoResponse getItem(Integer itemId, Integer id);
+    ItemDto getItemById(Long userId, Long itemId);
 
-    List<ItemDtoResponse> getItemUser(Integer itemId);
+    List<ItemDto> getItemsByUser(Long userId, int from, int size);
 
-    List<Item> getItemByName(String text);
+    Collection<ItemDto> searchItem(String text, int from, int size);
 
-    CommentDto addComment(Integer idUser, Integer itemId, CommentDto commentDto);
+    CommentDto postComment(Long userId, Long itemId, CommentDto commentDto);
+
+    void deleteItemById(Long userId, Long itemId);
 }
