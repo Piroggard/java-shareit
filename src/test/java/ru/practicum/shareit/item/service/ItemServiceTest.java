@@ -213,6 +213,18 @@ public class ItemServiceTest {
 
         assertEquals(commentDto1, commentDto);
     }
+    @Test
+    void addEmptyCommentsTest() {
+
+        CommentDto commentDto = mapper.map(comment, CommentDto.class);
+        commentDto.setText("");
+
+        var exception = assertThrows(
+                BadRequestException.class,
+                () -> itemService.addComment(1L, 1L, commentDto));
+
+        assertEquals("400 BAD_REQUEST \"Комментарий не может быть пустым\"", exception.getMessage());
+    }
 
     @Test
     void postCommentWrongUserTest() {
@@ -240,6 +252,25 @@ public class ItemServiceTest {
 
         assertEquals("404 NOT_FOUND \"комментарий  к предмету с id = '1' " +
                 "пользователем с id = 1 ; нет информации о пользователе.\"", exception.getMessage());
+    }
+
+    @Test
+    void saveItemWithWrongUserTest() {
+        when(userRepository.findById(77L))
+                .thenThrow(new NotFoundException(HttpStatus.NOT_FOUND, "Пользователь с id=77 не найден"));
+        ItemDto itemDto = ItemDto.builder()
+                .id(item.getId())
+                .name(item.getName())
+                .description(item.getDescription())
+                .ownerId(user.getId())
+                .available(item.getAvailable())
+                .requestId(item.getRequest())
+                .build();
+        var exception = assertThrows(
+                NotFoundException.class,
+                () -> itemService.addItem(itemDto, 77L));
+
+        assertEquals("404 NOT_FOUND \"Пользователь с id=77 не найден\"", exception.getMessage());
     }
 
     @Test

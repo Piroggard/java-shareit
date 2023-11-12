@@ -69,7 +69,20 @@ public class UserControllerTest {
                 .andExpect(jsonPath("$.name", is(user1.getName())))
                 .andExpect(jsonPath("$.email", is(user1.getEmail())));
     }
+    @SneakyThrows
+    @Test
+    void getUsersById() {
 
+        when(userService.getUserById(1L))
+                .thenReturn(user1);
+
+        mockMvc.perform(get("/users/1")
+                        .characterEncoding(StandardCharsets.UTF_8)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.name", is(user1.getName())))
+                .andExpect(jsonPath("$.email", is(user1.getEmail())));
+    }
     @SneakyThrows
     @Test
     void updateUser() {

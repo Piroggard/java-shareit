@@ -166,7 +166,18 @@ public class BookingRepositoryTest {
 
         assertEquals(bookingList.get(0).getId(), booking2.getId());
     }
+    @Test
+    void getFutureBookingsByBookerTest() {
+        User booker = userRepository.findById(booker2.getId()).get();
+        Long bookerId = booker.getId();
+        LocalDateTime localDateTime = LocalDateTime.now().plusDays(1);
+        List<Booking> bookingList = bookingRepository.getAllPastBookingsByOwner(bookerId, localDateTime, null);
 
+        assertEquals(bookingList.get(0).getId(), booking4.getId());
+        assertEquals(bookingList.get(0).getBooker().getName(), "Name");
+        assertEquals(bookingList.get(0).getStart(), booking4.getStart());
+        assertEquals(bookingList.get(0).getEnd(), booking4.getEnd());
+    }
     @Test
     void getAllPastBookingsByOwnerTest() {
         User owner = userRepository.findById(booker1.getId()).get();
@@ -222,6 +233,19 @@ public class BookingRepositoryTest {
         assertEquals(bookingList.get(1).getBooker().getName(), "Name");
         assertEquals(bookingList.get(1).getStart(), booking4.getStart());
         assertEquals(bookingList.get(1).getEnd(), booking4.getEnd());
+    }
+    @Test
+    void getAllByBookerIdAndStatusOrderByStartTest() {
+        List<Booking> bookingList = bookingRepository
+                .getAllByBookerIdAndStatusOrderByStartDesc(booker2.getId(), Status.WAITING, null);
+
+        assertEquals(bookingList.get(0).getId(), booking3.getId());
+        assertEquals(bookingList.get(0).getBooker().getName(), "Name");
+        assertEquals(bookingList.get(0).getStart(),
+                booking3.getStart());
+        assertEquals(bookingList.get(0).getEnd(),
+                booking3.getEnd());
+
     }
 
     @Test

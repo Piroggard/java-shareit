@@ -57,6 +57,22 @@ public class UserServiceTest {
     }
 
     @Test
+    void updateUsersNameAndEmailTest() {
+
+        user.setEmail("ivan@mailupdated.ru");
+        user.setName("ivanupdated");
+
+        Mockito.when(userRepository.findById(Mockito.any()))
+                .thenReturn(Optional.ofNullable(user));
+        Mockito.when(userRepository.save(Mockito.any()))
+                .thenReturn(user);
+        User content = userService.updateUser(user);
+
+        assertEquals(content.getEmail(), "ivan@mailupdated.ru");
+        assertEquals(content.getName(), "ivanupdated");
+    }
+
+    @Test
     void saveUserWithDoubleExceptionTest() {
 
         Mockito.when(userRepository.save(any()))
@@ -116,6 +132,16 @@ public class UserServiceTest {
                 .thenReturn(Optional.of(user));
         userService.getUserById(1L);
         assertEquals(user, userService.getUserById(1L));
+    }
+
+    @Test
+    void saveUsersTest() {
+        when(userRepository.save(any()))
+                .thenReturn(user);
+        User userSaved = userService.addUser(user);
+
+        assertNotNull(userSaved);
+        assertEquals(user.getId(), userSaved.getId());
     }
 
 }

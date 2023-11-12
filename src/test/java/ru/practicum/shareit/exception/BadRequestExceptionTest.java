@@ -22,7 +22,7 @@ public class BadRequestExceptionTest {
 
     @Test
     public void testBadRequestExceptionWithCustomHttpStatus() {
-        HttpStatus httpStatus = HttpStatus.INTERNAL_SERVER_ERROR; // Custom HTTP Status
+        HttpStatus httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
         String message = "Internal Server Error";
 
         BadRequestException badRequestException = new BadRequestException(httpStatus, message);

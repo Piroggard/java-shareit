@@ -37,5 +37,4 @@ public class ItemDto {
      BookingDtoShort lastBooking;
      BookingDtoShort nextBooking;
      Long requestId;
-
 }

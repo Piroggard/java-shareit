@@ -151,7 +151,6 @@ public class ItemRequestServiceImplTest {
 
     @Test
     void getAllItemRequestWithWrongRequestIdTest() {
-
         var exception = assertThrows(
                 BadRequestException.class,
                 () -> itemRequestService.getAllItemRequest(1L, -1, 1));
