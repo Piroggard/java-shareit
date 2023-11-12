@@ -91,6 +91,7 @@ public class ValidationExceptionsHandler {
     @ExceptionHandler
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ValidationException.ErrorResponse handleThrowable(final RuntimeException e) {
-        return new ValidationException.ErrorResponse(e.getMessage(), "Сервер прилёг отдохнуть. Но обещал вернуться;)");
+        return new ValidationException.ErrorResponse(e.getMessage(),
+                "Сервер прилёг отдохнуть. Но обещал вернуться;)");
     }
 }
