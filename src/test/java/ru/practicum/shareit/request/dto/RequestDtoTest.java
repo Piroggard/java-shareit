@@ -3,7 +3,7 @@ package ru.practicum.shareit.request.dto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
-import ru.practicum.shareit.item.dto.ItemDtoReq;
+import ru.practicum.shareit.item.dto.ItemDtoRequest;
 import ru.practicum.shareit.user.dto.UserDto;
 
 import java.time.LocalDateTime;
@@ -52,8 +52,8 @@ public class RequestDtoTest {
 
     @Test
     public void testSetAndGetItems() {
-        List<ItemDtoReq> items = new ArrayList<>();
-        items.add(new ItemDtoReq());
+        List<ItemDtoRequest> items = new ArrayList<>();
+        items.add(new ItemDtoRequest());
         requestDto.setItems(items);
         assertEquals(items, requestDto.getItems());
     }

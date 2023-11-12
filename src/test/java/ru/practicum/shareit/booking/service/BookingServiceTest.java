@@ -6,16 +6,16 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import ru.practicum.shareit.booking.dto.BookingDto;
-import ru.practicum.shareit.booking.dto.BookingDtoForItem;
+import ru.practicum.shareit.booking.dto.BookingDtoItem;
 import ru.practicum.shareit.booking.enums.Status;
 import ru.practicum.shareit.booking.model.Booking;
-import ru.practicum.shareit.booking.repository.BookingRepository;
+import ru.practicum.shareit.booking.storage.BookingRepository;
 import ru.practicum.shareit.exceptions.ItemNotFoundException;
 import ru.practicum.shareit.exceptions.ItemUnavailableException;
 import ru.practicum.shareit.item.model.Item;
-import ru.practicum.shareit.item.repository.ItemRepository;
+import ru.practicum.shareit.item.storage.ItemRepository;
 import ru.practicum.shareit.user.model.User;
-import ru.practicum.shareit.user.repository.UserRepository;
+import ru.practicum.shareit.user.storage.UserRepository;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -54,7 +54,7 @@ public class BookingServiceTest {
         item.setId(itemId);
         item.setAvailable(true);
 
-        BookingDtoForItem request = new BookingDtoForItem();
+        BookingDtoItem request = new BookingDtoItem();
         request.setItemId(itemId);
         request.setStart(LocalDateTime.now());
         request.setEnd(LocalDateTime.now().plusHours(1));
@@ -66,7 +66,7 @@ public class BookingServiceTest {
         when(bookingRepository.save(booking)).thenReturn(booking);
 
         BookingDto expect = toBookingDto(booking);
-        BookingDto actual = bookingService.saveBooking(userId, toBookingDto(booking));
+        BookingDto actual = bookingService.addBooking(userId, toBookingDto(booking));
         assertEquals(expect, actual);
     }
 
@@ -86,7 +86,7 @@ public class BookingServiceTest {
         item.setId(itemId);
         item.setAvailable(false);
 
-        BookingDtoForItem request = new BookingDtoForItem();
+        BookingDtoItem request = new BookingDtoItem();
         request.setItemId(itemId);
         request.setStart(LocalDateTime.now());
         request.setEnd(LocalDateTime.now().plusHours(1));
@@ -98,7 +98,7 @@ public class BookingServiceTest {
 
         assertThrows(
                 ItemUnavailableException.class,
-                () -> bookingService.saveBooking(userId, toBookingDto(booking))
+                () -> bookingService.addBooking(userId, toBookingDto(booking))
         );
     }
 
@@ -118,7 +118,7 @@ public class BookingServiceTest {
         item.setId(itemId);
         item.setAvailable(true);
 
-        BookingDtoForItem request = new BookingDtoForItem();
+        BookingDtoItem request = new BookingDtoItem();
         request.setItemId(itemId);
         request.setStart(LocalDateTime.now());
         request.setEnd(LocalDateTime.now().plusHours(1));
@@ -130,7 +130,7 @@ public class BookingServiceTest {
 
         assertThrows(
                 ItemNotFoundException.class,
-                () -> bookingService.saveBooking(userId, toBookingDto(booking))
+                () -> bookingService.addBooking(userId, toBookingDto(booking))
         );
     }
 

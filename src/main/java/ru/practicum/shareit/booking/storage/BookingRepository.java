@@ -4,8 +4,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
+import ru.practicum.shareit.booking.enums.Status;
 import ru.practicum.shareit.booking.model.Booking;
-import ru.practicum.shareit.booking.model.Status;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -63,4 +63,3 @@ public interface BookingRepository extends PagingAndSortingRepository<Booking, L
             "ORDER BY b.start DESC")
     List<Booking> getAllCurrentBookingsByOwner(Long ownerId, LocalDateTime timeNow, LocalDateTime now1, Pageable pageable);
 }
-

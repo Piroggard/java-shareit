@@ -13,6 +13,6 @@ import lombok.experimental.FieldDefaults;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class BookingDtoShort {
-    Long id;
-    Long bookerId;
+     Long id;
+     Long bookerId;
 }

@@ -1,49 +1,71 @@
-CREATE TABLE IF NOT EXISTS users (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(255) ,
-    email VARCHAR(255)
-);
-
-
-CREATE TABLE IF NOT EXISTS requests
+create table IF NOT EXISTS USERS
 (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    description VARCHAR(255),
-    requester_id INT,
-    created TIMESTAMP,
-    CONSTRAINT requests_fr_user FOREIGN KEY (requester_id) REFERENCES users(id)
-);
+    USER_ID   BIGINT auto_increment,
+    USER_NAME CHARACTER VARYING(255) not null,
+    EMAIL     CHARACTER VARYING(512) not null
+    constraint "USERS_pk2"
+    unique,
+    constraint "USERS_pk"
+    primary key (USER_ID)
+    );
+
+create table IF NOT EXISTS REQUESTS
+(
+    REQUEST_ID   BIGINT auto_increment,
+    DESCRIPTION  VARCHAR(1000)               not null,
+    REQUESTOR_ID BIGINT                      not null,
+    CREATED      TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+    constraint "REQUESTS_pk"
+    primary key (REQUEST_ID),
+    constraint "REQUESTS_USERS_ID_fk"
+    foreign key (REQUESTOR_ID) references USERS (USER_ID) ON DELETE CASCADE
+    );
+
+create table IF NOT EXISTS ITEMS
+(
+    ITEM_ID         BIGINT auto_increment,
+    ITEM_NAME       VARCHAR(255)  not null,
+    DESCRIPTION     VARCHAR(1012) not null,
+    IS_AVAILABLE    BOOLEAN,
+    OWNER_ID        BIGINT        not null,
+    REQUEST         BIGINT,
+    REQUEST_ITEM_ID BIGINT,
+    constraint "ITEMS_pk"
+    primary key (ITEM_ID),
+    constraint "ITEMS_USERS_ID_fk"
+    foreign key (OWNER_ID) references USERS (USER_ID) ON DELETE CASCADE,
+    constraint "REQUEST_ITEM_ID_fk"
+    foreign key (REQUEST_ITEM_ID) references REQUESTS (REQUEST_ID) ON DELETE CASCADE
+    );
+
+create table IF NOT EXISTS BOOKINGS
+(
+    BOOKING_ID BIGINT auto_increment,
+    START_DATE TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+    END_DATE   TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+    ITEM_ID    BIGINT                      not null,
+    BOOKER_ID  BIGINT                      not null,
+    STATUS     VARCHAR(8)                  not null,
+    constraint "BOOKINGS_pk"
+    primary key (BOOKING_ID),
+    constraint "BOOKINGS_ITEMS_ID_fk"
+    foreign key (ITEM_ID) references ITEMS (ITEM_ID) ON DELETE CASCADE,
+    constraint "BOOKINGS_USERS_ID_fk"
+    foreign key (BOOKER_ID) references USERS (USER_ID) ON DELETE CASCADE
+    );
 
 
-
-
-CREATE TABLE IF NOT EXISTS items (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(255) NOT NULL,
-    description VARCHAR(255),
-    available BOOL,
-    owner INT,
-    request_id INT
-);
-
-CREATE TABLE IF NOT EXISTS booking (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    start_of_booking TIMESTAMP,
-    end_of_booking TIMESTAMP,
-    item_id INT,
-    booker_id INT,
-    status VARCHAR(255),
-    CONSTRAINT booking_fr_items FOREIGN KEY (item_id) REFERENCES items(id),
-    CONSTRAINT booking_fr_user FOREIGN KEY (booker_id) REFERENCES users(id)
-);
-
-
-CREATE TABLE IF NOT EXISTS comment (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    text VARCHAR(255) NOT NULL,
-    item_id INT,
-    author_id INT,
-    created TIMESTAMP,
-    CONSTRAINT comment_fr_items FOREIGN KEY (item_id) REFERENCES items(id),
-    CONSTRAINT comment_fr_user FOREIGN KEY (author_id) REFERENCES users(id)
-);
+create table IF NOT EXISTS COMMENTS
+(
+    COMMENT_ID BIGINT auto_increment,
+    TEXT       CHARACTER VARYING(1000)     not null,
+    ITEM_ID    BIGINT                      not null,
+    AUTHOR_ID  BIGINT                      not null,
+    CREATED    TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+    constraint "COMMENTS_pk"
+    primary key (COMMENT_ID),
+    constraint "COMMENTS_ITEMS_ID_fk"
+    foreign key (ITEM_ID) references ITEMS (ITEM_ID) ON DELETE CASCADE,
+    constraint "COMMENTS_USERS_ID_fk"
+    foreign key (AUTHOR_ID) references USERS (USER_ID) ON DELETE CASCADE
+    );

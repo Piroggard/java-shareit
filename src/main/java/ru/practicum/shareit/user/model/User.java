@@ -1,34 +1,45 @@
 package ru.practicum.shareit.user.model;
 
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
+import lombok.experimental.FieldDefaults;
 
-import javax.persistence.*;
-
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
 
 /**
  * TODO Sprint add-controllers.
  */
-@Setter
+@Entity
 @Getter
-@ToString
+@Setter
+@EqualsAndHashCode(exclude = {"id"})
 @AllArgsConstructor
 @NoArgsConstructor
-@EqualsAndHashCode
-@Builder(toBuilder = true)
-@Entity
+@Builder
 @Table(name = "users")
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class User {
     @Id
+    @Column(name = "user_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
-    @Column(name = "name")
-    private String name;
+     Long id;
+    @NotBlank
+    @Column(name = "user_name")
+     String name;
+    @NotBlank(message = "Email не должен быть пустым")
+    @Email
     @Column(name = "email")
-    private String email;
+     String email;
 }

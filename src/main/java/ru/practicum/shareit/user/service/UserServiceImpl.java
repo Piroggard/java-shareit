@@ -5,13 +5,11 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.practicum.shareit.user.dto.UserDto;
+import ru.practicum.shareit.exceptions.UserNotFoundException;
 import ru.practicum.shareit.user.model.User;
-import ru.practicum.shareit.user.storage.JpaUserRepository;
-import ru.practicum.shareit.user.validation.UserValidation;
+import ru.practicum.shareit.user.storage.UserRepository;
 
 import java.util.Collection;
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -22,22 +20,19 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional(readOnly = true)
     public Collection<User> getAllUsers() {
-        log.info("Получен список всех пользователей");
         return userRepository.findAll();
     }
 
     @Override
     @Transactional
     @SneakyThrows
-    public User saveUser(User user) {
-        log.info("Создан пользователь, id = {} ", user);
+    public User addUser(User user) {
         return userRepository.save(user);
     }
 
     @Override
     @Transactional
-    public void deleteUser(Long id) {
-        log.info("Удалён пользователь, id = {} ", id);
+    public void removeUser(Long id) {
         userRepository.deleteById(id);
     }
 
@@ -52,7 +47,6 @@ public class UserServiceImpl implements UserService {
         if (user.getEmail() != null) {
             oldUser.setEmail(user.getEmail());
         }
-        log.info("Данные пользователя {} обновлены ", user);
         return userRepository.save(oldUser);
     }
 
@@ -61,7 +55,6 @@ public class UserServiceImpl implements UserService {
     public User getUserById(Long id) {
         User user = userRepository.findById(id).orElseThrow(() ->
                 new UserNotFoundException("Пользователь не найден " + id));
-        log.info("Получен пользователь, id = {} ", id);
         return user;
     }
 }

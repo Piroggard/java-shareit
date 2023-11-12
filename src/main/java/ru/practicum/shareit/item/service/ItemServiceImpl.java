@@ -11,22 +11,21 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.booking.enums.Status;
 import ru.practicum.shareit.booking.model.Booking;
-import ru.practicum.shareit.booking.repository.BookingRepository;
+import ru.practicum.shareit.booking.storage.BookingRepository;
 import ru.practicum.shareit.comment.dto.CommentDto;
 import ru.practicum.shareit.comment.dto.CommentMapper;
 import ru.practicum.shareit.comment.model.Comment;
-import ru.practicum.shareit.comment.repository.CommentRepository;
+import ru.practicum.shareit.comment.storage.CommentRepository;
 import ru.practicum.shareit.exceptions.BadRequestException;
 import ru.practicum.shareit.exceptions.ItemNotFoundException;
 import ru.practicum.shareit.exceptions.NotFoundException;
 import ru.practicum.shareit.exceptions.UserNotFoundException;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.model.Item;
-import ru.practicum.shareit.item.repository.ItemRepository;
 import ru.practicum.shareit.item.storage.ItemRepository;
 import ru.practicum.shareit.mappers.ItemMapper;
 import ru.practicum.shareit.user.model.User;
-import ru.practicum.shareit.user.repository.UserRepository;
+import ru.practicum.shareit.user.storage.UserRepository;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
@@ -55,7 +54,7 @@ public class ItemServiceImpl implements ItemService {
     @Override
     @Transactional
     @SneakyThrows
-    public Item saveItem(ItemDto itemDto, Long userId) {
+    public Item addItem(ItemDto itemDto, Long userId) {
         User user = userRepository.findById(userId).orElseThrow(() ->
                 new UserNotFoundException("Пользователь не найден " + userId));
         Item item = toItem(user, itemDto);
@@ -84,14 +83,12 @@ public class ItemServiceImpl implements ItemService {
         if (Objects.nonNull(item.getAvailable())) {
             itemUpdate.setAvailable(item.getAvailable());
         }
-        log.info("Выполнено обновление информации о предмете = {}, " +
-                "принадлежащем пользователю, id = {}", item.getId(), userId);
         return itemRepository.save(itemUpdate);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public ItemDto getItemById(Long userId, Long itemId) {
+    public ItemDto getItem(Long userId, Long itemId) {
         Item item = itemRepository.findById(itemId).orElseThrow(() ->
                 new ItemNotFoundException("Предмет не найден " + itemId));
         List<Comment> comments = commentRepository.findAllByItemId(itemId);
@@ -102,24 +99,21 @@ public class ItemServiceImpl implements ItemService {
         itemDto.setComments(comments.stream()
                 .map(CommentMapper::toCommentDto)
                 .collect(Collectors.toList()));
-        log.info("Получен предмет, id = {}", itemId);
         return itemDto;
     }
 
     @Override
     @Transactional(readOnly = true)
-    public List<ItemDto> getItemsByUser(Long userId, int from, int size) {
+    public List<ItemDto> getItemByName(Long userId, int from, int size) {
         if (!userRepository.existsById(userId)) {
-            log.debug("Пользователь {} не найден", userId);
             throw new UserNotFoundException("Пользователь не найден " + userId);
         }
 
         if ((from < 0 || size < 0 || (from == 0 && size == 0))) {
-            throw new BadRequestException(HttpStatus.BAD_REQUEST, "Неправильный параметр пагинации");
+            throw new BadRequestException(HttpStatus.BAD_REQUEST, "Неправильный параметр");
         }
         Pageable pageable = PageRequest.of(from / size, size);
         if (itemRepository.findAllByOwnerId(userId, pageable) == null) {
-            log.info("У пользователя {} нет предметов для аренды ", userId);
             throw new ItemNotFoundException("У пользователя нет предметов для аренды " + userId);
         }
 
@@ -128,8 +122,6 @@ public class ItemServiceImpl implements ItemService {
                 .map(ItemMapper::toItemDto)
                 .collect(Collectors.toList());
         itemsList.forEach(this::addLastAndNextDateTimeForBookingToItem);
-
-        log.info("Список всех предметов, принадлежащих пользователю, id = {}", userId);
         return itemsList;
     }
 
@@ -137,7 +129,6 @@ public class ItemServiceImpl implements ItemService {
     @Transactional(readOnly = true)
     public Collection<ItemDto> searchItem(String text, int from, int size) {
         if (text.isEmpty()) {
-            log.debug("Запрос не найден");
             return Collections.emptyList();
         }
         String textToLowerCase = text.toLowerCase();
@@ -160,9 +151,8 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     @Transactional
-    public CommentDto postComment(Long userId, Long itemId, CommentDto commentDto) {
+    public CommentDto addComment(Long userId, Long itemId, CommentDto commentDto) {
         if (commentDto.getText().isEmpty()) {
-            log.debug("Комментарий не может быть пустьм");
             throw new BadRequestException(HttpStatus.BAD_REQUEST, "Комментарий не может быть пустым");
         }
         User user = userRepository.findById(userId)
@@ -202,7 +192,6 @@ public class ItemServiceImpl implements ItemService {
     public void deleteItemById(Long userId, Long itemId) {
         userRepository.findById(userId);
         itemRepository.deleteById(itemId);
-        log.info("Удален предмет {}, принадлежащий пользователю {}", itemId, userId);
     }
 
     private void addLastAndNextDateTimeForBookingToItem(ItemDto itemDto) {

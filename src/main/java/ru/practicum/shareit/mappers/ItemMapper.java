@@ -2,7 +2,7 @@ package ru.practicum.shareit.mappers;
 
 import lombok.experimental.UtilityClass;
 import ru.practicum.shareit.item.dto.ItemDto;
-import ru.practicum.shareit.item.dto.ItemDtoReq;
+import ru.practicum.shareit.item.dto.ItemDtoRequest;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.model.User;
 
@@ -31,8 +31,8 @@ public class ItemMapper {
         return item;
     }
 
-    public static ItemDtoReq toItemDtoReq(Item item) {
-        return ItemDtoReq.builder()
+    public static ItemDtoRequest toItemDtoReq(Item item) {
+        return ItemDtoRequest.builder()
                 .id(item.getId())
                 .name(item.getName())
                 .description(item.getDescription())
@@ -42,7 +42,7 @@ public class ItemMapper {
                 .build();
     }
 
-    public static List<ItemDtoReq> toItemDtoList(List<Item> items) {
+    public static List<ItemDtoRequest> toItemDtoList(List<Item> items) {
         return items.stream()
                 .map(ItemMapper::toItemDtoReq)
                 .collect(Collectors.toList());

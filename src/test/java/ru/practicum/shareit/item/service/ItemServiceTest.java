@@ -13,16 +13,15 @@ import ru.practicum.shareit.booking.enums.Status;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.comment.dto.CommentDto;
 import ru.practicum.shareit.comment.model.Comment;
-import ru.practicum.shareit.comment.repository.CommentRepository;
+import ru.practicum.shareit.comment.storage.CommentRepository;
 import ru.practicum.shareit.exceptions.BadRequestException;
 import ru.practicum.shareit.exceptions.NotFoundException;
 import ru.practicum.shareit.exceptions.UserNotFoundException;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.model.Item;
-import ru.practicum.shareit.item.repository.ItemRepository;
-import ru.practicum.shareit.item.service.ItemServiceImpl;
+import ru.practicum.shareit.item.storage.ItemRepository;
 import ru.practicum.shareit.user.model.User;
-import ru.practicum.shareit.user.repository.UserRepository;
+import ru.practicum.shareit.user.storage.UserRepository;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -121,7 +120,7 @@ public class ItemServiceTest {
                 .requestId(item.getRequest())
                 .build();
 
-        assertEquals(item.getName(), itemService.saveItem(itemDto, user.getId()).getName());
+        assertEquals(item.getName(), itemService.addItem(itemDto, user.getId()).getName());
     }
 
 
@@ -138,7 +137,7 @@ public class ItemServiceTest {
                 .build();
         var exception = assertThrows(
                 UserNotFoundException.class,
-                () -> itemService.saveItem(itemDto, 999L));
+                () -> itemService.addItem(itemDto, 999L));
 
         assertEquals("Пользователь не найден 999", exception.getMessage());
     }
@@ -149,7 +148,7 @@ public class ItemServiceTest {
         ItemDto itemDto = mapper.map(item, ItemDto.class);
         var exception = assertThrows(
                 UserNotFoundException.class,
-                () -> itemService.saveItem(itemDto, 999L));
+                () -> itemService.addItem(itemDto, 999L));
 
         assertEquals("Пользователь не найден 999", exception.getMessage());
     }
@@ -168,7 +167,7 @@ public class ItemServiceTest {
                 .build();
         var exception = assertThrows(
                 NotFoundException.class,
-                () -> itemService.saveItem(itemDto, 77L));
+                () -> itemService.addItem(itemDto, 77L));
 
         assertEquals("404 NOT_FOUND \"Пользователь с id=77 не найден\"", exception.getMessage());
     }
@@ -210,7 +209,7 @@ public class ItemServiceTest {
         when(commentRepository.save(any()))
                 .thenReturn(comment);
         CommentDto commentDto = mapper.map(comment, CommentDto.class);
-        CommentDto commentDto1 = itemService.postComment(1L, 1L, commentDto);
+        CommentDto commentDto1 = itemService.addComment(1L, 1L, commentDto);
 
         assertEquals(commentDto1, commentDto);
     }
@@ -224,7 +223,7 @@ public class ItemServiceTest {
 
         var exception = assertThrows(
                 NotFoundException.class,
-                () -> itemService.postComment(1L, 1L, commentDto));
+                () -> itemService.addComment(1L, 1L, commentDto));
 
         assertEquals("404 NOT_FOUND \"комментарий  к предмету с id = '1' " +
                 "пользователем с id = 1 ; нет информации о пользователе.\"", exception.getMessage());
@@ -237,7 +236,7 @@ public class ItemServiceTest {
 
         var exception = assertThrows(
                 NotFoundException.class,
-                () -> itemService.postComment(1L, 1L, commentDto));
+                () -> itemService.addComment(1L, 1L, commentDto));
 
         assertEquals("404 NOT_FOUND \"комментарий  к предмету с id = '1' " +
                 "пользователем с id = 1 ; нет информации о пользователе.\"", exception.getMessage());
@@ -251,7 +250,7 @@ public class ItemServiceTest {
 
         var exception = assertThrows(
                 BadRequestException.class,
-                () -> itemService.postComment(1L, 1L, commentDto));
+                () -> itemService.addComment(1L, 1L, commentDto));
 
         assertEquals("400 BAD_REQUEST \"Комментарий не может быть пустым\"", exception.getMessage());
     }
@@ -265,7 +264,7 @@ public class ItemServiceTest {
         commentDto.setText("");
 
         assertThrows(BadRequestException.class, () -> {
-            itemService.postComment(userId, itemId, commentDto);
+            itemService.addComment(userId, itemId, commentDto);
         });
     }
 }

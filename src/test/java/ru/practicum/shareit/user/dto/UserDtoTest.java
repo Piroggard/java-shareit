@@ -11,34 +11,34 @@ public class UserDtoTest {
     public void createUserDtoTest() {
         UserDto userDto = UserDto.builder()
                 .id(1L)
-                .name("name")
-                .email("email@email.com")
+                .name("Raisa")
+                .email("raisa@mail.ru")
                 .build();
 
         assertNotNull(userDto);
         assertEquals(1L, userDto.getId());
-        assertEquals("name", userDto.getName());
-        assertEquals("email@email.com", userDto.getEmail());
+        assertEquals("Raisa", userDto.getName());
+        assertEquals("raisa@mail.ru", userDto.getEmail());
     }
 
     @Test
     public void testEquals() {
         UserDto user1 = UserDto.builder()
                 .id(1L)
-                .name("name")
-                .email("email@email.com")
+                .name("John")
+                .email("john@example.com")
                 .build();
 
         UserDto user2 = UserDto.builder()
                 .id(2L)
-                .name("name")
-                .email("email@email.com")
+                .name("John")
+                .email("john@example.com")
                 .build();
 
         UserDto user3 = UserDto.builder()
                 .id(3L)
-                .name("name")
-                .email("email@email.com")
+                .name("Jane")
+                .email("jane@example.com")
                 .build();
 
         assertEquals(user1, user2);
@@ -49,20 +49,20 @@ public class UserDtoTest {
     public void testHashCode() {
         UserDto user1 = UserDto.builder()
                 .id(1L)
-                .name("name")
-                .email("email@email.com")
+                .name("John")
+                .email("john@example.com")
                 .build();
 
         UserDto user2 = UserDto.builder()
                 .id(2L)
-                .name("name")
-                .email("email@email.com")
+                .name("John")
+                .email("john@example.com")
                 .build();
 
         UserDto user3 = UserDto.builder()
                 .id(3L)
-                .name("name")
-                .email("email@email.com")
+                .name("Jane")
+                .email("jane@example.com")
                 .build();
 
         assertEquals(user1.hashCode(), user2.hashCode());

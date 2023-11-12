@@ -2,7 +2,7 @@ package ru.practicum.shareit.request.dto;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
-import ru.practicum.shareit.item.dto.ItemDtoReq;
+import ru.practicum.shareit.item.dto.ItemDtoRequest;
 import ru.practicum.shareit.user.dto.UserDto;
 
 import java.time.LocalDateTime;
@@ -21,8 +21,8 @@ public class RequestDtoWithRequestTest {
         UserDto user1 = new UserDto(1L, "John", "Doe");
         UserDto user2 = new UserDto(2L, "Jane", "Smith");
 
-        List<ItemDtoReq> items1 = new ArrayList<>();
-        items1.add(ItemDtoReq.builder()
+        List<ItemDtoRequest> items1 = new ArrayList<>();
+        items1.add(ItemDtoRequest.builder()
                 .id(1L)
                 .name("Щётка для обуви")
                 .description("Стандартная щётка для обуви")
@@ -32,8 +32,8 @@ public class RequestDtoWithRequestTest {
                 .build());
 
 
-        List<ItemDtoReq> items2 = new ArrayList<>();
-        items2.add(ItemDtoReq.builder()
+        List<ItemDtoRequest> items2 = new ArrayList<>();
+        items2.add(ItemDtoRequest.builder()
                 .id(2L)
                 .name("Щётка для обуви2")
                 .description("Стандартная щётка для обуви2")

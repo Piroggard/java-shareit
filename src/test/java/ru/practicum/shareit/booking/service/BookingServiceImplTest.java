@@ -11,15 +11,15 @@ import org.modelmapper.ModelMapper;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.enums.Status;
 import ru.practicum.shareit.booking.model.Booking;
-import ru.practicum.shareit.booking.repository.BookingRepository;
+import ru.practicum.shareit.booking.storage.BookingRepository;
 import ru.practicum.shareit.exceptions.BookingNotFoundException;
 import ru.practicum.shareit.exceptions.UserNotFoundException;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.model.Item;
-import ru.practicum.shareit.item.repository.ItemRepository;
+import ru.practicum.shareit.item.storage.ItemRepository;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.model.User;
-import ru.practicum.shareit.user.repository.UserRepository;
+import ru.practicum.shareit.user.storage.UserRepository;
 
 import java.time.LocalDateTime;
 import java.util.Collections;
@@ -165,7 +165,7 @@ public class BookingServiceImplTest {
 
         when(bookingRepository.save(any()))
                 .thenReturn(booking);
-        BookingDto bookingDto5 = bookingService.saveBooking(user.getId(), bookingDto);
+        BookingDto bookingDto5 = bookingService.addBooking(user.getId(), bookingDto);
 
         assertEquals(1, bookingDto5.getId());
     }
@@ -175,7 +175,7 @@ public class BookingServiceImplTest {
 
         var exception = assertThrows(
                 UserNotFoundException.class,
-                () -> bookingService.saveBooking(77L, bookingDto));
+                () -> bookingService.addBooking(77L, bookingDto));
 
         assertEquals("Пользователь не найден 77", exception.getMessage());
     }
@@ -189,7 +189,7 @@ public class BookingServiceImplTest {
         booking.setItem(item);
         when(bookingRepository.findById(anyLong()))
                 .thenReturn(Optional.of(booking));
-        Booking booking1 = bookingService.getBookingForOwnerOrBooker(1L, 1L);
+        Booking booking1 = bookingService.getBookingByOwner(1L, 1L);
 
         assertEquals(1L, booking1.getId());
     }
@@ -205,7 +205,7 @@ public class BookingServiceImplTest {
 
         List<Booking> expectedResult = List.of(booking);
 
-        assertEquals(expectedResult, bookingService.getAllBookingsForUser(
+        assertEquals(expectedResult, bookingService.getAllBookingUsers(
                 user.getId(), "ALL", true, 0, 20));
     }
 
@@ -220,7 +220,7 @@ public class BookingServiceImplTest {
 
         List<Booking> expectedResult = List.of(booking);
 
-        assertEquals(expectedResult, bookingService.getAllBookingsForUser(
+        assertEquals(expectedResult, bookingService.getAllBookingUsers(
                 user.getId(), "FUTURE", false, 0, 20));
     }
 
@@ -233,7 +233,7 @@ public class BookingServiceImplTest {
                 .thenReturn(Collections.singletonList(booking));
         List<Booking> expectedResult = List.of(booking);
 
-        assertEquals(expectedResult, bookingService.getAllBookingsForUser(
+        assertEquals(expectedResult, bookingService.getAllBookingUsers(
                 user.getId(), "WAITING", false, 0, 20));
     }
 
@@ -248,7 +248,7 @@ public class BookingServiceImplTest {
 
         List<Booking> expectedResult = List.of(booking);
 
-        assertEquals(expectedResult, bookingService.getAllBookingsForUser(
+        assertEquals(expectedResult, bookingService.getAllBookingUsers(
                 user.getId(), "REJECTED", false, 0, 20));
     }
 
@@ -263,7 +263,7 @@ public class BookingServiceImplTest {
 
         List<Booking> expectedResult = List.of(booking);
 
-        assertEquals(expectedResult, bookingService.getAllBookingsForUser(
+        assertEquals(expectedResult, bookingService.getAllBookingUsers(
                 user.getId(), "CURRENT", false, 0, 20));
     }
 
@@ -278,7 +278,7 @@ public class BookingServiceImplTest {
 
         List<Booking> expectedResult = List.of(booking);
 
-        assertEquals(expectedResult, bookingService.getAllBookingsForUser(
+        assertEquals(expectedResult, bookingService.getAllBookingUsers(
                 1L, "PAST", false, 0, 20));
     }
 
@@ -293,7 +293,7 @@ public class BookingServiceImplTest {
 
         List<Booking> expectedResult = List.of(booking);
 
-        assertEquals(expectedResult, bookingService.getAllBookingsForUser(
+        assertEquals(expectedResult, bookingService.getAllBookingUsers(
                 user.getId(), "ALL", true, 0, 20));
     }
 
@@ -308,7 +308,7 @@ public class BookingServiceImplTest {
 
         List<Booking> expectedResult = List.of(booking);
 
-        assertEquals(expectedResult, bookingService.getAllBookingsForUser(
+        assertEquals(expectedResult, bookingService.getAllBookingUsers(
                 user.getId(), "CURRENT", true, 0, 20));
     }
 
@@ -323,7 +323,7 @@ public class BookingServiceImplTest {
 
         List<Booking> expectedResult = List.of(booking);
 
-        assertEquals(expectedResult, bookingService.getAllBookingsForUser(
+        assertEquals(expectedResult, bookingService.getAllBookingUsers(
                 user.getId(), "PAST", true, 0, 20));
     }
 
@@ -338,7 +338,7 @@ public class BookingServiceImplTest {
 
         List<Booking> expectedResult = List.of(booking);
 
-        assertEquals(expectedResult, bookingService.getAllBookingsForUser(
+        assertEquals(expectedResult, bookingService.getAllBookingUsers(
                 user.getId(), "FUTURE", true, 0, 20));
     }
 
@@ -353,7 +353,7 @@ public class BookingServiceImplTest {
 
         List<Booking> expectedResult = List.of(booking);
 
-        assertEquals(expectedResult, bookingService.getAllBookingsForUser(
+        assertEquals(expectedResult, bookingService.getAllBookingUsers(
                 user.getId(), "WAITING", true, 0, 20));
     }
 
@@ -368,7 +368,7 @@ public class BookingServiceImplTest {
 
         List<Booking> expectedResult = List.of(booking);
 
-        assertEquals(expectedResult, bookingService.getAllBookingsForUser(
+        assertEquals(expectedResult, bookingService.getAllBookingUsers(
                 user.getId(), "REJECTED", true, 0, 20));
     }
 
@@ -382,7 +382,7 @@ public class BookingServiceImplTest {
                 .thenReturn(Optional.ofNullable(booking));
         when(bookingRepository.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
 
-        Booking booking1 = bookingService.confirmOrCancelBooking(user.getId(), 3L, true);
+        Booking booking1 = bookingService.updateBooking(user.getId(), 3L, true);
 
         assertEquals(booking.getStatus(), booking1.getStatus());
     }
@@ -392,7 +392,7 @@ public class BookingServiceImplTest {
 
         var exception = assertThrows(
                 BookingNotFoundException.class,
-                () -> bookingService.confirmOrCancelBooking(77L, 1L, true));
+                () -> bookingService.updateBooking(77L, 1L, true));
         assertEquals("Бронирование не найдено",
                 exception.getMessage());
     }

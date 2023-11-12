@@ -12,7 +12,7 @@ import org.modelmapper.ModelMapper;
 import ru.practicum.shareit.exceptions.ConflictException;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.model.User;
-import ru.practicum.shareit.user.repository.UserRepository;
+import ru.practicum.shareit.user.storage.UserRepository;
 
 import java.util.List;
 import java.util.Optional;
@@ -50,7 +50,7 @@ public class UserServiceTest {
     void saveUserTest() {
         when(userRepository.save(any()))
                 .thenReturn(user);
-        User userSaved = userService.saveUser(user);
+        User userSaved = userService.addUser(user);
 
         assertNotNull(userSaved);
         assertEquals(user.getId(), userSaved.getId());
@@ -63,12 +63,12 @@ public class UserServiceTest {
                 .thenReturn(user)
                 .thenThrow(new ConflictException("Пользователь с таким email уже существует"));
 
-        User userSaved = userService.saveUser(user);
+        User userSaved = userService.addUser(user);
 
         assertNotNull(userSaved);
         assertThrows(
                 ConflictException.class,
-                () -> userService.saveUser(user)
+                () -> userService.addUser(user)
         );
     }
 
@@ -104,7 +104,7 @@ public class UserServiceTest {
         when(userRepository.save(any()))
                 .thenReturn(user);
         UserDto userDto = mapper.map(user, UserDto.class);
-        assertEquals(userDto.getEmail(), userService.saveUser(toUser(userDto)).getEmail());
+        assertEquals(userDto.getEmail(), userService.addUser(toUser(userDto)).getEmail());
 
         assertThrows(IndexOutOfBoundsException.class,
                 () -> userRepository.findAll().get(0));
