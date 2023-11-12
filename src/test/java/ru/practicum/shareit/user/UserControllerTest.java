@@ -69,6 +69,7 @@ public class UserControllerTest {
                 .andExpect(jsonPath("$.name", is(user1.getName())))
                 .andExpect(jsonPath("$.email", is(user1.getEmail())));
     }
+
     @SneakyThrows
     @Test
     void getUsersById() {
@@ -83,6 +84,7 @@ public class UserControllerTest {
                 .andExpect(jsonPath("$.name", is(user1.getName())))
                 .andExpect(jsonPath("$.email", is(user1.getEmail())));
     }
+
     @SneakyThrows
     @Test
     void updateUser() {

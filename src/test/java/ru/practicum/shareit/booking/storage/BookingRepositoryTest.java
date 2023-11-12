@@ -166,6 +166,7 @@ public class BookingRepositoryTest {
 
         assertEquals(bookingList.get(0).getId(), booking2.getId());
     }
+
     @Test
     void getFutureBookingsByBookerTest() {
         User booker = userRepository.findById(booker2.getId()).get();
@@ -178,6 +179,7 @@ public class BookingRepositoryTest {
         assertEquals(bookingList.get(0).getStart(), booking4.getStart());
         assertEquals(bookingList.get(0).getEnd(), booking4.getEnd());
     }
+
     @Test
     void getAllPastBookingsByOwnerTest() {
         User owner = userRepository.findById(booker1.getId()).get();
@@ -234,6 +236,7 @@ public class BookingRepositoryTest {
         assertEquals(bookingList.get(1).getStart(), booking4.getStart());
         assertEquals(bookingList.get(1).getEnd(), booking4.getEnd());
     }
+
     @Test
     void getAllByBookerIdAndStatusOrderByStartTest() {
         List<Booking> bookingList = bookingRepository
