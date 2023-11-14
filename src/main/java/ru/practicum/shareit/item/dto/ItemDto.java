@@ -25,16 +25,16 @@ import java.util.List;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class ItemDto {
 
-     Long id;
+    Long id;
     @NotBlank(message = "Name не должен быть пустым")
-     String name;
+    String name;
     @NotBlank(message = "description не должен быть пустым")
-     String description;
-     Long ownerId;
+    String description;
+    Long ownerId;
     @NotNull(message = "available не должен отсутствовать")
-     Boolean available;
-     List<CommentDto> comments;
-     BookingDtoShort lastBooking;
-     BookingDtoShort nextBooking;
-     Long requestId;
+    Boolean available;
+    List<CommentDto> comments;
+    BookingDtoShort lastBooking;
+    BookingDtoShort nextBooking;
+    Long requestId;
 }

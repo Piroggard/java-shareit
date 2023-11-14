@@ -57,7 +57,7 @@ public class BookingController {
     @GetMapping
     public List<BookingDto> getAllBookingUser(@RequestHeader("X-Sharer-User-Id") Long userId,
                                               @RequestParam(defaultValue = "ALL")
-                                                    String state,
+                                              String state,
                                               @RequestParam(required = false, defaultValue = "0") @Min(0) int from,
                                               @RequestParam(required = false, defaultValue = "10") @Min(0) int size) {
         return bookingService.getAllBookingUsers(userId, state, false, from, size).stream()
@@ -68,7 +68,7 @@ public class BookingController {
     @GetMapping("/owner")
     public List<BookingDto> getBookingByOwner(@RequestHeader("X-Sharer-User-Id") Long userId,
                                               @RequestParam(defaultValue = "ALL")
-                                                   String state,
+                                              String state,
                                               @RequestParam(required = false, defaultValue = "0") @Min(0) int from,
                                               @RequestParam(required = false, defaultValue = "10") @Min(0) int size) {
         return bookingService.getAllBookingUsers(userId, state, true, from, size).stream()

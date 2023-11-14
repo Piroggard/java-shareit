@@ -5,11 +5,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import ru.practicum.shareit.item.dto.ItemDtoRequest;
 import ru.practicum.shareit.user.dto.UserDto;
-
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
@@ -19,34 +17,45 @@ public class RequestDtoTest {
 
     @BeforeEach
     public void setUp() {
-        requestDto = new RequestDto();
+
     }
 
     @Test
     public void testSetAndGetId() {
+        requestDto = RequestDto.builder()
+                .id(1L)
+                .build();
         Long id = 1L;
-        requestDto.setId(id);
         assertEquals(id, requestDto.getId());
     }
 
     @Test
     public void testSetAndGetDescription() {
+        requestDto = RequestDto.builder()
+                .description("This is a test description")
+                .build();
         String description = "This is a test description";
-        requestDto.setDescription(description);
+
         assertEquals(description, requestDto.getDescription());
     }
 
     @Test
     public void testSetAndGetRequestor() {
+
         UserDto requestor = new UserDto();
-        requestDto.setRequestor(requestor);
+        requestDto = RequestDto.builder()
+                .requestor(requestor)
+                .build();
+
         assertNotNull(requestDto.getRequestor());
     }
 
     @Test
     public void testSetAndGetCreatedTime() {
         LocalDateTime created = LocalDateTime.now();
-        requestDto.setCreated(created);
+        requestDto = RequestDto.builder()
+                .created(created)
+                .build();
         assertEquals(created, requestDto.getCreated());
     }
 
@@ -54,7 +63,9 @@ public class RequestDtoTest {
     public void testSetAndGetItems() {
         List<ItemDtoRequest> items = new ArrayList<>();
         items.add(new ItemDtoRequest());
-        requestDto.setItems(items);
+        requestDto = RequestDto.builder()
+                .items(items)
+                .build();
         assertEquals(items, requestDto.getItems());
     }
 }

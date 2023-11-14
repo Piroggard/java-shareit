@@ -37,19 +37,19 @@ public class Item {
     @Id
     @Column(name = "item_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-     Long id;
+    Long id;
     @Column(name = "item_name", nullable = false)
-     String name;
+    String name;
     @Column(name = "description", nullable = false)
-     String description;
+    String description;
     @Column(name = "owner_id", nullable = false)
-     Long ownerId;
+    Long ownerId;
     @Column(name = "is_available")
-     Boolean available;
+    Boolean available;
     @Column
-     Long request;
+    Long request;
     @OneToMany(mappedBy = "item")
-     List<Booking> bookings;
+    List<Booking> bookings;
     @OneToMany(mappedBy = "item")
-     List<Comment> comments;
+    List<Comment> comments;
 }

@@ -23,12 +23,12 @@ import java.util.Objects;
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class RequestDtoWithRequest {
-     Long id;
-     String description;
-     UserDto requestor;
+    Long id;
+    String description;
+    UserDto requestor;
     @JsonProperty("created")
-     LocalDateTime created;
-     List<ItemDtoRequest> items = new ArrayList<>();
+    LocalDateTime created;
+    List<ItemDtoRequest> items = new ArrayList<>();
 
     @Override
     public boolean equals(Object o) {

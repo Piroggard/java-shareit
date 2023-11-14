@@ -9,6 +9,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.practicum.shareit.booking.dto.BookingDtoShort;
 import ru.practicum.shareit.booking.enums.Status;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.storage.BookingRepository;
@@ -23,11 +24,11 @@ import ru.practicum.shareit.exceptions.UserNotFoundException;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.storage.ItemRepository;
-import ru.practicum.shareit.mappers.ItemMapper;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.storage.UserRepository;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -108,21 +109,11 @@ public class ItemServiceImpl implements ItemService {
         if (!userRepository.existsById(userId)) {
             throw new UserNotFoundException("Пользователь не найден " + userId);
         }
-
-        if ((from < 0 || size < 0 || (from == 0 && size == 0))) {
-            throw new BadRequestException(HttpStatus.BAD_REQUEST, "Неправильный параметр");
-        }
         Pageable pageable = PageRequest.of(from / size, size);
         if (itemRepository.findAllByOwnerId(userId, pageable) == null) {
             throw new ItemNotFoundException("У пользователя нет предметов для аренды " + userId);
         }
-
-        List<ItemDto> itemsList = itemRepository.findAllByOwnerId(userId, pageable)
-                .stream()
-                .map(ItemMapper::toItemDto)
-                .collect(Collectors.toList());
-        itemsList.forEach(this::addLastAndNextDateTimeForBookingToItem);
-        return itemsList;
+        return getItemUsers(userId, pageable);
     }
 
     @Override
@@ -215,5 +206,75 @@ public class ItemServiceImpl implements ItemService {
         } else {
             itemDto.setLastBooking(null);
         }
+    }
+
+
+    public List<ItemDto> getItemUsers(Long userId, Pageable pageable) {
+        List<ItemDto> itemDtoResponses = new ArrayList<>();
+        List<Item> itemList = itemRepository.findAllByOwnerId(userId, pageable);
+        List<Booking> allBookings = bookingRepository.findAll();
+        for (Item item : itemList) {
+            Booking nextBooking = null;
+            Booking lastBooking = null;
+            LocalDateTime closestPastDateTime = null;
+            LocalDateTime firstPastDateTime = null;
+            LocalDateTime currentDateTime = LocalDateTime.now();
+            List<Booking> bookingListByItemId = new ArrayList<>();
+            List<LocalDateTime> dateTimesStart = new ArrayList<>();
+            List<LocalDateTime> dateTimesEnd = new ArrayList<>();
+            BookingDtoShort bookingConciseLast;
+            BookingDtoShort bookingConciseNext;
+
+            for (Booking booking : allBookings) {
+                if (Objects.equals(booking.getItem().getId(), item.getId()) && Status.APPROVED == booking.getStatus()) {
+                    bookingListByItemId.add(booking);
+                    dateTimesStart.add(booking.getStart());
+                    dateTimesEnd.add(booking.getEnd());
+                }
+            }
+            for (LocalDateTime dateTime : dateTimesStart) {
+                if (dateTime.isBefore(currentDateTime)) {
+                    if (closestPastDateTime == null || dateTime.isAfter(closestPastDateTime)) {
+                        closestPastDateTime = dateTime;
+                    }
+                }
+            }
+            for (LocalDateTime dateTime : dateTimesEnd) {
+                if (dateTime.isAfter(currentDateTime)) {
+                    if (firstPastDateTime == null || dateTime.isBefore(firstPastDateTime)) {
+                        firstPastDateTime = dateTime;
+                    }
+                }
+            }
+            for (Booking booking : bookingListByItemId) {
+                if (booking.getStart().equals(closestPastDateTime)) {
+                    lastBooking = booking;
+                }
+            }
+            for (Booking booking : bookingListByItemId) {
+                if (booking.getEnd().equals(firstPastDateTime)) {
+                    nextBooking = booking;
+                }
+            }
+
+            if (lastBooking != null || nextBooking != null) {
+                bookingConciseLast = BookingDtoShort.builder().id(nextBooking.getId())
+                        .bookerId(nextBooking.getBooker().getId()).build();
+                bookingConciseNext = BookingDtoShort.builder().id(lastBooking.getId())
+                        .bookerId(lastBooking.getBooker().getId()).build();
+            } else {
+                bookingConciseLast = null;
+                bookingConciseNext = null;
+            }
+            ItemDto itemDtoResponse = ItemDto.builder()
+                    .id(item.getId())
+                    .name(item.getName())
+                    .description(item.getDescription())
+                    .available(item.getAvailable())
+                    .nextBooking(bookingConciseLast)
+                    .lastBooking(bookingConciseNext).build();
+            itemDtoResponses.add(itemDtoResponse);
+        }
+        return itemDtoResponses;
     }
 }

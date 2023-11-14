@@ -18,11 +18,11 @@ import java.util.Objects;
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class CommentDto {
-     Long id;
+    Long id;
     @NotBlank
-     String text;
-     LocalDateTime created;
-     String authorName;
+    String text;
+    LocalDateTime created;
+    String authorName;
 
     @Override
     public boolean equals(Object o) {

@@ -26,7 +26,7 @@ import static ru.practicum.shareit.mappers.UserMapper.toUser;
 public class UserServiceTest {
     @Mock
     private UserRepository userRepository;
-    private final ModelMapper mapper = new ModelMapper(); //maybe final
+    private final ModelMapper mapper = new ModelMapper();
     @InjectMocks
     private UserServiceImpl userService;
     private User user;

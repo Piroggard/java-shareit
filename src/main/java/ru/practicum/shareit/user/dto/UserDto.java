@@ -18,12 +18,12 @@ import java.util.Objects;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class UserDto {
 
-     Long id;
+    Long id;
     @NotBlank(message = "имя пользователя не моет быть пустым")
-     String name;
+    String name;
     @NotBlank(message = "Email не должен быть пустым")
     @Email
-     String email;
+    String email;
 
     @Override
     public boolean equals(Object o) {

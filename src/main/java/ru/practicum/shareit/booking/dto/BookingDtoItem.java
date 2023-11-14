@@ -21,11 +21,11 @@ import java.time.LocalDateTime;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class BookingDtoItem {
     @NotNull(message = "Не указана вещь")
-     Long itemId;
+    Long itemId;
     @NotNull(message = "Дата начала бронирования не может быть пустой")
     @FutureOrPresent(message = "Дата начала бронирования не может быть в прошлом")
-     LocalDateTime start;
+    LocalDateTime start;
     @NotNull(message = "Дата окончания бронирования не может быть пустой")
     @Future(message = "Дата окончания бронирования не может быть в прошлом")
-     LocalDateTime end;
+    LocalDateTime end;
 }

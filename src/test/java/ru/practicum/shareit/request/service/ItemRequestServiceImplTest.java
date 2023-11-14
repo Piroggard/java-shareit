@@ -98,8 +98,8 @@ public class ItemRequestServiceImplTest {
                 .thenReturn(request);
         RequestDto requestDto1 = mapper.map(request, RequestDto.class);
         RequestDto requestDto2 = itemRequestService.addItemRequest(requestDto1, 1L);
-        assertEquals(requestDto2.getDescription(), requestDto1.getDescription());
-        assertEquals(requestDto2.getCreated(), requestDto1.getCreated());
+        assertEquals(requestDto2.getDescription(), request.getDescription());
+        assertEquals(requestDto2.getCreated(), request.getCreated());
     }
 
     @Test

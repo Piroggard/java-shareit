@@ -23,19 +23,18 @@ import java.time.LocalDateTime;
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class BookingDto {
-     Long id;
+    Long id;
     @NotNull(message = "Дата начала бронирования не может быть пустой")
     @FutureOrPresent(message = "Дата начала бронирования не может быть в прошлом")
     @JsonProperty("start")
-     LocalDateTime start;
+    LocalDateTime start;
     @NotNull(message = "Дата окончания бронирования не может быть пустой")
     @Future(message = "Дата окончания бронирования не может быть в прошлом")
     @JsonProperty("end")
-     LocalDateTime end;
-     UserDto booker;
-     Long itemId;
-     ItemDto item;
-     Status status;
-    //для проверки
+    LocalDateTime end;
+    UserDto booker;
+    Long itemId;
+    ItemDto item;
+    Status status;
 }
 

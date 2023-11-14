@@ -17,12 +17,12 @@ import lombok.experimental.FieldDefaults;
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class ItemDtoRequest {
-     Long id;
-     String name;
-     String description;
-     Long ownerId;
-     Long requestId;
-     Boolean available;
+    Long id;
+    String name;
+    String description;
+    Long ownerId;
+    Long requestId;
+    Boolean available;
 
 }
 

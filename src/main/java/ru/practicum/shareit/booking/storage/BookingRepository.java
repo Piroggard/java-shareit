@@ -23,6 +23,7 @@ public interface BookingRepository extends PagingAndSortingRepository<Booking, L
     List<Booking> getAllByItemOwnerIdAndStatusOrderByStartDesc(Long ownerId, Status status, Pageable pageable);
 
     List<Booking> getAllByBookerIdAndStatusOrderByStartDesc(Long bookerId, Status status, Pageable pageable);
+    List<Booking> findAll();
 
     @Query("SELECT b FROM Booking b JOIN b.booker bb" +
             " WHERE bb.id = ?1 ORDER BY b.start DESC")

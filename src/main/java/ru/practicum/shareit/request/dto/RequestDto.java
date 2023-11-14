@@ -7,7 +7,6 @@ import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import lombok.experimental.FieldDefaults;
 import ru.practicum.shareit.item.dto.ItemDtoRequest;
 import ru.practicum.shareit.user.dto.UserDto;
@@ -20,18 +19,17 @@ import java.util.List;
  * TODO Sprint add-item-requests.
  */
 @Getter
-@Setter
 @EqualsAndHashCode
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class RequestDto {
-     Long id;
+    Long id;
     @NotBlank(message = "не должно быть пустым")
-     String description;
-     UserDto requestor;
+    String description;
+    UserDto requestor;
     @JsonProperty("created")
-     LocalDateTime created;
-     List<ItemDtoRequest> items;
+    LocalDateTime created;
+    List<ItemDtoRequest> items;
 }

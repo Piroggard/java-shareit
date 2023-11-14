@@ -18,7 +18,7 @@ import ru.practicum.shareit.user.service.UserService;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
-import java.util.Collection;
+import java.util.List;
 import java.util.stream.Collectors;
 
 import static ru.practicum.shareit.mappers.UserMapper.*;
@@ -36,7 +36,7 @@ public class UserController {
     private final UserService userService;
 
     @GetMapping
-    public Collection<UserDto> getAllUsers() {
+    public List<UserDto> getAllUsers() {
         log.info("Получен GET-апрос /users");
         return userService.getAllUsers().stream()
                 .map(UserMapper::toUserDto)

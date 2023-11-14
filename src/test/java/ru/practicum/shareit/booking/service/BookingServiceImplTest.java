@@ -156,7 +156,7 @@ public class BookingServiceImplTest {
 
     @Test
     void saveBookingTest() {
-        //Booking booking = mapper.map(bookingDto, Booking.class);
+
 
         when(userRepository.findById(1L))
                 .thenReturn(Optional.of(user));
@@ -210,7 +210,7 @@ public class BookingServiceImplTest {
     }
 
     @Test
-    void getAllForBookerFUTURETest() {
+    void getAllForBookerFutureTest() {
         when(userRepository.existsById(any()))
                 .thenReturn(true);
         Booking booking = toBooking(user, item, bookingDto);
@@ -225,7 +225,7 @@ public class BookingServiceImplTest {
     }
 
     @Test
-    void getAllForBookerWAITINGTest() {
+    void getAllForBookerWaitingTest() {
         when(userRepository.existsById(any()))
                 .thenReturn(true);
         Booking booking = toBooking(user, item, bookingDto);
@@ -238,7 +238,7 @@ public class BookingServiceImplTest {
     }
 
     @Test
-    void getAllForBookerREJECTEDTest() {
+    void getAllForBookerRejectedTest() {
         when(userRepository.existsById(any()))
                 .thenReturn(true);
         Booking booking = toBooking(user, item, bookingDto);
@@ -253,7 +253,7 @@ public class BookingServiceImplTest {
     }
 
     @Test
-    void getAllForBookerCURRENTTest() {
+    void getAllForBookerCurrentTest() {
         when(userRepository.existsById(any()))
                 .thenReturn(true);
         Booking booking = toBooking(user, item, bookingDto);
@@ -268,7 +268,7 @@ public class BookingServiceImplTest {
     }
 
     @Test
-    void getAllForBookerPASTTest() {
+    void getAllForBookerPasTest() {
         when(userRepository.existsById(any()))
                 .thenReturn(true);
         Booking booking = toBooking(user, item, bookingDto);
@@ -298,7 +298,7 @@ public class BookingServiceImplTest {
     }
 
     @Test
-    void getAllForOwnerCURRENTTest() {
+    void getAllForOwnerCurrenTest() {
         when(userRepository.existsById(any()))
                 .thenReturn(true);
         Booking booking = toBooking(user, item, bookingDto);
@@ -313,7 +313,7 @@ public class BookingServiceImplTest {
     }
 
     @Test
-    void getAllForOwnerPASTTest() {
+    void getAllForOwnerPasTest() {
         when(userRepository.existsById(any()))
                 .thenReturn(true);
         Booking booking = toBooking(user, item, bookingDto);
@@ -328,7 +328,7 @@ public class BookingServiceImplTest {
     }
 
     @Test
-    void getAllForOwnerFUTURETest() {
+    void getAllForOwnerFutureTest() {
         when(userRepository.existsById(any()))
                 .thenReturn(true);
         Booking booking = toBooking(user, item, bookingDto);
@@ -343,7 +343,7 @@ public class BookingServiceImplTest {
     }
 
     @Test
-    void getAllForOwnerWAITINGTest() {
+    void getAllForOwnerWaitingTest() {
         when(userRepository.existsById(any()))
                 .thenReturn(true);
         Booking booking = toBooking(user, item, bookingDto);
@@ -358,7 +358,7 @@ public class BookingServiceImplTest {
     }
 
     @Test
-    void getAllForOwnerREJECTEDTest() {
+    void getAllForOwnerRejectedTest() {
         when(userRepository.existsById(any()))
                 .thenReturn(true);
         Booking booking = toBooking(user, item, bookingDto);
