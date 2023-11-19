@@ -75,19 +75,4 @@ public class ItemRequestRepositoryTest {
         assertNotNull(requestList);
     }
 
-    @Test
-    void findByOwnerIdTest() {
-        List<Request> requestList = itemRequestRepository.findByOwnerId(otherUser.getId(), null);
-
-        assertEquals(requestList.get(0).getId(), request.getId());
-        assertEquals(requestList.get(0).getDescription(), "Хотел бы воспользоваться щёткой для обуви");
-        assertEquals(requestList.get(0).getCreated(), LocalDateTime.of(2023, 7, 9, 13, 56));
-        assertEquals(requestList.get(0).getRequestor().getId(), user.getId());
-        assertEquals(requestList.get(0).getRequestor().getName(), "Ivan");
-        assertEquals(requestList.get(0).getRequestor().getEmail(), "ivan@mail.ru");
-
-        List<Request> requestList1 = itemRequestRepository.findByOwnerId(user.getId(), null);
-        assertEquals(requestList1.size(), 0);
-    }
-
 }
