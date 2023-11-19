@@ -3,7 +3,7 @@ package ru.practicum.shareit.item.dto;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import ru.practicum.shareit.booking.dto.BookingDtoShort;
-
+import java.util.Comparator;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.util.List;
@@ -17,7 +17,8 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class ItemDto {
+public class ItemDto implements Comparator<ItemDto> {
+
 
      Long id;
     @NotBlank(message = "Name не должен быть пустым")
@@ -30,5 +31,11 @@ public class ItemDto {
      BookingDtoShort lastBooking;
      BookingDtoShort nextBooking;
      Long requestId;
+
+    @Override
+    public int compare(ItemDto item1, ItemDto item2) {
+        // Сравнение по полю id
+        return Long.compare(item1.getId(), item2.getId());
+    }
 
 }

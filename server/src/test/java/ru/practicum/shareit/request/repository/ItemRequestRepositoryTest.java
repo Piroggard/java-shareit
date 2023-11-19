@@ -69,7 +69,7 @@ public class ItemRequestRepositoryTest {
         itemRequestRepository.deleteAll();
     }
 
-    
+
     @Test
     void findAllByRequestorIdTest() {
         List<Request> requestList = itemRequestRepository.findAllByRequestorId(1L);

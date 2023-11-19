@@ -32,6 +32,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -114,7 +115,10 @@ public class ItemServiceImpl implements ItemService {
         if (itemRepository.findAllByOwnerId(userId, pageable) == null) {
             throw new ItemNotFoundException("У пользователя нет предметов для аренды " + userId);
         }
-        return getItemUsers(userId, pageable);
+        List<ItemDto> items = getItemUsers(userId, pageable);
+
+        Collections.sort(items, Comparator.comparing(ItemDto::getId));
+        return items;
     }
 
     @Override
