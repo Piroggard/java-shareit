@@ -24,8 +24,8 @@ public class CommentDto {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof ru.practicum.shareit.item.dto.CommentDto)) return false;
-        ru.practicum.shareit.item.dto.CommentDto that = (ru.practicum.shareit.item.dto.CommentDto) o;
+        if (!(o instanceof CommentDto)) return false;
+        CommentDto that = (CommentDto) o;
         return Objects.equals(getId(), that.getId()) && Objects.equals(getText(),
                 that.getText()) && Objects.equals(getAuthorName(), that.getAuthorName());
     }
