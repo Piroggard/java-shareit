@@ -14,7 +14,6 @@ import javax.validation.constraints.NotNull;
 import java.util.Collection;
 import java.util.stream.Collectors;
 
-import static ru.practicum.shareit.mappers.UserMapper.*;
 
 /**
  * TODO Sprint add-controllers.
