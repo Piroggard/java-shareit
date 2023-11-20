@@ -17,17 +17,17 @@ import static com.fasterxml.jackson.annotation.JsonProperty.Access.WRITE_ONLY;
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class BookingDto {
-     Long id;
+    Long id;
 
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
-     LocalDateTime start;
+    LocalDateTime start;
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
-     LocalDateTime end;
+    LocalDateTime end;
     @JsonProperty(access = WRITE_ONLY)
-     Long itemId;
-     UserDto booker;
-     ItemDto item;
-     Status status;
+    Long itemId;
+    UserDto booker;
+    ItemDto item;
+    Status status;
 
 
 }

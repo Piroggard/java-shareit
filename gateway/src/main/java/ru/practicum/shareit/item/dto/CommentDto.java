@@ -15,12 +15,12 @@ import java.util.Objects;
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class CommentDto {
-     Long id;
+    Long id;
     @NotBlank
-     String text;
+    String text;
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
-     LocalDateTime created;
-     String authorName;
+    LocalDateTime created;
+    String authorName;
 
     @Override
     public boolean equals(Object o) {

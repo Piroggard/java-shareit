@@ -64,14 +64,14 @@ public class BookingController {
     public ResponseEntity<Object> getAllBookingsForBooker(@RequestHeader(name = USER_ID_HEADER)
                                                           @Min(value = 1, message = "User ID must be more than 0")
                                                           Long userId,
-                                                          @RequestParam(name="state", defaultValue = "ALL")
+                                                          @RequestParam(name = "state", defaultValue = "ALL")
                                                           String stateParam,
                                                           @RequestParam(required = false, defaultValue = "0")
-                                                              @Min(value = 0, message = "Parameter 'from' must be " +
-                                                                      "more than 0") int from,
+                                                          @Min(value = 0, message = "Parameter 'from' must be " +
+                                                                  "more than 0") int from,
                                                           @RequestParam(required = false, defaultValue = "10")
-                                                              @Min(value = 0, message = "Parameter 'size' must be " +
-                                                                      "more than 0") int size) {
+                                                          @Min(value = 0, message = "Parameter 'size' must be " +
+                                                                  "more than 0") int size) {
         log.info("Получен GET-запрос просмотра всех забронированных вещей и статусов их бронирования " +
                 "для  пользователя");
         State state = State.from(stateParam)
@@ -91,8 +91,8 @@ public class BookingController {
                                                          @Min(value = 0, message = "Parameter 'from' must be " +
                                                                  "more than 0") int from,
                                                          @RequestParam(required = false, defaultValue = "10")
-                                                             @Min(value = 0, message = "Parameter 'size' must be " +
-                                                                     "more than 0") int size) {
+                                                         @Min(value = 0, message = "Parameter 'size' must be " +
+                                                                 "more than 0") int size) {
         log.info("Получен GET-запрос просмотра всех забронированных вещей и статусов их бронирования " +
                 "для владельца");
         State state = State.from(stateParam)

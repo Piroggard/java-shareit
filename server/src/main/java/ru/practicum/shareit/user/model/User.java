@@ -23,12 +23,12 @@ public class User {
     @Id
     @Column(name = "user_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-     Long id;
+    Long id;
     @NotBlank
     @Column(name = "user_name")
-     String name;
+    String name;
     @NotBlank(message = "Email не должен быть пустым")
     @Email
     @Column(name = "email")
-     String email;
+    String email;
 }

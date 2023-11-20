@@ -24,22 +24,22 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class BookingDto {
-     Long id;
+    Long id;
     @NotNull(message = "Дата начала бронирования не может быть пустой")
     @FutureOrPresent(message = "Дата начала бронирования не может быть в прошлом")
     @JsonProperty("start")
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
-     LocalDateTime start;
+    LocalDateTime start;
     @NotNull(message = "Дата окончания бронирования не может быть пустой")
     @Future(message = "Дата окончания бронирования не может быть в прошлом")
     @JsonProperty("end")
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
-     LocalDateTime end;
-     UserDto booker;
+    LocalDateTime end;
+    UserDto booker;
     @NotNull
     @Min(value = 1, message = "Item id должно быть больше 0")
-     Long itemId;
-     ItemDto item;
-     Status status;
+    Long itemId;
+    ItemDto item;
+    Status status;
 }
 

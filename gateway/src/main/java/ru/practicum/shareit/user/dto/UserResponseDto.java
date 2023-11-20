@@ -9,7 +9,7 @@ import lombok.experimental.FieldDefaults;
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class UserResponseDto {
-     Long id;
-     String email;
-     String name;
+    Long id;
+    String email;
+    String name;
 }

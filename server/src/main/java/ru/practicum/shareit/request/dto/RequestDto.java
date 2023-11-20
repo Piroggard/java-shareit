@@ -21,11 +21,11 @@ import java.util.List;
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class RequestDto {
-     Long id;
+    Long id;
     @NotBlank(message = "не должно быть пустым")
-     String description;
-     UserDto requestor;
+    String description;
+    UserDto requestor;
     @JsonProperty("created")
-     LocalDateTime created;
-     List<ItemDtoReq> items;
+    LocalDateTime created;
+    List<ItemDtoReq> items;
 }

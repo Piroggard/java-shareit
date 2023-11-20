@@ -15,12 +15,12 @@ import java.util.Objects;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class UserDto {
 
-     Long id;
+    Long id;
     @NotBlank(groups = Validation.Post.class)
-     String name;
+    String name;
     @Email
     @NotBlank(groups = Validation.Post.class)
-     String email;
+    String email;
 
     @Override
     public boolean equals(Object o) {

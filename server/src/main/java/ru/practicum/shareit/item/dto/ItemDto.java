@@ -3,6 +3,7 @@ package ru.practicum.shareit.item.dto;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import ru.practicum.shareit.booking.dto.BookingDtoShort;
+
 import java.util.Comparator;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -20,21 +21,21 @@ import java.util.List;
 public class ItemDto implements Comparator<ItemDto> {
 
 
-     Long id;
+    Long id;
     @NotBlank(message = "Name не должен быть пустым")
-     String name;
+    String name;
     @NotBlank(message = "description не должен быть пустым")
-     String description;
+    String description;
     @NotNull(message = "available не должен отсутствовать")
-     Boolean available;
-     List<CommentDto> comments;
-     BookingDtoShort lastBooking;
-     BookingDtoShort nextBooking;
-     Long requestId;
+    Boolean available;
+    List<CommentDto> comments;
+    BookingDtoShort lastBooking;
+    BookingDtoShort nextBooking;
+    Long requestId;
 
     @Override
     public int compare(ItemDto item1, ItemDto item2) {
-        // Сравнение по полю id
+
         return Long.compare(item1.getId(), item2.getId());
     }
 

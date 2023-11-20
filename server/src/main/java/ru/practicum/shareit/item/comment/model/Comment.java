@@ -19,17 +19,17 @@ public class Comment {
     @Id
     @Column(name = "comment_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-     Long id;
+    Long id;
     @Column(name = "text", nullable = false)
-     String text;
+    String text;
     @ManyToOne(fetch = FetchType.LAZY)
     @ToString.Exclude
     @JoinColumn(name = "item_id", nullable = false)
-     Item item;
+    Item item;
     @ManyToOne(fetch = FetchType.EAGER)
     @ToString.Exclude
     @JoinColumn(name = "author_id", nullable = false)
-     User author;
+    User author;
     @Column
-     LocalDateTime created = LocalDateTime.now();
+    LocalDateTime created = LocalDateTime.now();
 }

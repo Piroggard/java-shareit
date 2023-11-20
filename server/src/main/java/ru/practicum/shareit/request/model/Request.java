@@ -26,16 +26,16 @@ public class Request {
     @Id
     @Column(name = "request_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-     Long id;
+    Long id;
     @Column(name = "description", nullable = false)
-     String description;
+    String description;
     @ManyToOne
     @JoinColumn(name = "requestor_id", nullable = false)
-     User requestor;
+    User requestor;
     @Column(name = "created")
-     LocalDateTime created;
+    LocalDateTime created;
     @OneToMany(mappedBy = "request", orphanRemoval = true, cascade = CascadeType.ALL)
     @Column(nullable = true)
     @JsonIgnore
-     List<Item> items;
+    List<Item> items;
 }

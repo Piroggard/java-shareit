@@ -22,7 +22,7 @@ public class RequestController {
 
     @PostMapping
     public ResponseEntity<Object> addItemRequest(@RequestHeader(name = USER_ID_HEADER) @Min(value = 1,
-            message = "User id should be more than 0")Long userId,
+            message = "User id should be more than 0") Long userId,
                                                  @Validated @RequestBody(required = false) RequestDto requestDto) {
         log.info("Получен POST-запрос /requests {} ", requestDto);
         ResponseEntity<Object> response = requestClient.addItemRequest(userId, requestDto);
@@ -33,12 +33,12 @@ public class RequestController {
     @GetMapping
     public ResponseEntity<Object> getRequests(@RequestHeader(name = USER_ID_HEADER) @Min(value = 1,
             message = "User id should be more than 0") Long userId,
-                                                   @RequestParam(defaultValue = "0") @Min(value = 0,
-                                                           message = "Parameter 'from' must be more than 0")
-                                                   Integer from,
-                                                   @RequestParam(defaultValue = "10") @Min(value = 0,
-                                                           message = "Parameter 'size' must be more than 0")
-                                                  Integer size) {
+                                              @RequestParam(defaultValue = "0") @Min(value = 0,
+                                                      message = "Parameter 'from' must be more than 0")
+                                              Integer from,
+                                              @RequestParam(defaultValue = "10") @Min(value = 0,
+                                                      message = "Parameter 'size' must be more than 0")
+                                              Integer size) {
         log.info("Получен GET-запрос от ID пользователя {} на получение списка своих запросов вместе с данными о них." +
                 " Результаты возвращаются постранично от {}, в количестве {}.", userId, from, size);
         ResponseEntity<Object> response = requestClient.requestsGet(userId, from, size);
@@ -49,12 +49,12 @@ public class RequestController {
     @GetMapping(path = "/all")
     public ResponseEntity<Object> getAllRequests(@RequestHeader(name = USER_ID_HEADER) @Min(value = 1,
             message = "User id should be more than 0") Long userId,
-                                                      @RequestParam(name = "from", defaultValue = "0") @Min(value = 0,
-                                                              message = "Parameter 'from' must be more than 0")
-                                                      Integer from,
-                                                      @RequestParam(name = "size", defaultValue = "20") @Min(value = 0,
-                                                              message = "Parameter 'size' must be more than 0")
-                                                     Integer size) {
+                                                 @RequestParam(name = "from", defaultValue = "0") @Min(value = 0,
+                                                         message = "Parameter 'from' must be more than 0")
+                                                 Integer from,
+                                                 @RequestParam(name = "size", defaultValue = "20") @Min(value = 0,
+                                                         message = "Parameter 'size' must be more than 0")
+                                                 Integer size) {
         log.info("Получен GET-запрос от ID польбзователя {} на получение списка запросов, " +
                 "созданных другимим пользователями. " +
                 "Результаты возвращаются постранично от {} в количестве {}.", userId, from, size);
@@ -66,8 +66,8 @@ public class RequestController {
     @GetMapping("/{requestId}")
     public ResponseEntity<Object> getRequestById(@RequestHeader(name = USER_ID_HEADER) @Min(value = 1,
             message = "User id should be more than 0") Long userId,
-                                                @PathVariable @Min(value = 1,
-                                                        message = "Request id should be more than 0")  Long requestId) {
+                                                 @PathVariable @Min(value = 1,
+                                                         message = "Request id should be more than 0") Long requestId) {
         log.info("Получен GET-запрос от ID пользователя {} " +
                 "на получение данных об одном конкретном запросе ID: {} с данными об ответах.", userId, requestId);
         ResponseEntity<Object> response = requestClient.getRequestById(userId, requestId);

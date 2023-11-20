@@ -32,8 +32,8 @@ public class UserController {
     }
 
     @GetMapping("{userId}")
-    public ResponseEntity<Object> getUserById(@PathVariable  @Min(value = 1, message = "User ID must be more than 0")
-                                                  Long userId) {
+    public ResponseEntity<Object> getUserById(@PathVariable @Min(value = 1, message = "User ID must be more than 0")
+                                              Long userId) {
         log.info("Получен GET-запрос /userId {} ", userId);
         ResponseEntity<Object> response = userClient.getUser(userId);
         log.info("Ответ на запрос: {}", response);
@@ -58,8 +58,8 @@ public class UserController {
 
     @PatchMapping("/{userId}")
     public ResponseEntity<Object> updateUser(@NotNull @Validated(Validation.Patch.class) @RequestBody UserDto userDto,
-                              @PathVariable @Min(value = 1,
-                                      message = "User ID must be more than 0") Long userId) {
+                                             @PathVariable @Min(value = 1,
+                                                     message = "User ID must be more than 0") Long userId) {
         log.info("Получен PATCH-запрос /userId {} на изменение данных: {} ", userId, userDto);
         ResponseEntity<Object> response = userClient.updateUser(userId, userDto);
         log.info("Ответ на запрос: {}", response);

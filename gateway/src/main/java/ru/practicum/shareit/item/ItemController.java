@@ -61,13 +61,13 @@ public class ItemController {
 
     @GetMapping
     public ResponseEntity<Object> getItemsByUser(@RequestHeader(name = USER_ID_HEADER, required = false)
-                                                     @Min(value = 0, message = "UserId must be more than 0")
-                                                     Long userId,
+                                                 @Min(value = 0, message = "UserId must be more than 0")
+                                                 Long userId,
                                                  @RequestParam(name = "from", defaultValue = "0")
                                                  @Min(value = 0, message = "From must be more than 0") Integer from,
                                                  @RequestParam(name = "size", defaultValue = "20")
-                                                     @Min(value = 0, message = "Size must be more than 0")
-                                                     Integer size) {
+                                                 @Min(value = 0, message = "Size must be more than 0")
+                                                 Integer size) {
         log.info(String.format("Получен GET-запрос: список всех предметов одного пользователя {}  %s", userId));
         ResponseEntity<Object> response = itemClient.getItemByUser(userId, from, size);
         log.info(String.format("Ответ на запрос: {} %s", response));
